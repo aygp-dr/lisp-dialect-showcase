@@ -1,0 +1,77 @@
+# Common patterns
+.DS_Store
+*~
+*.swp
+*.swo
+.#*
+\#*\#
+
+# Common Lisp
+*.fasl
+*.abcl
+*.dx32fsl
+*.dx64fsl
+*.lx32fsl
+*.lx64fsl
+*.x86f
+*.sparcf
+
+# Clojure
+target/
+.lein-*
+.nrepl-port
+.cpcache/
+.clj-kondo/.cache/
+
+# Emacs Lisp
+*.elc
+
+# Racket
+compiled/
+*.zo
+*.dep
+*.rkt~
+
+# Hy
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Fennel/Lua
+luarocks/
+lua_modules/
+.luarocks/
+
+# Janet
+janet-quickjs/
+
+# Build directories
+build/
+
+# Dependency directories
+node_modules/
+bower_components/
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
