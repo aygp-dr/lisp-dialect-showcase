@@ -8,7 +8,8 @@ This repository demonstrates the similarities and differences between various Li
 
 ## Included Dialects
 
-- Common Lisp - A standardized, multi-paradigm Lisp dialect
+- Common Lisp (SBCL) - A standardized, multi-paradigm Lisp dialect
+- Common Lisp (CLISP) - GNU CLISP implementation of Common Lisp
 - Clojure - A modern Lisp for the JVM
 - Scheme - A minimalist Lisp dialect
 - Emacs Lisp - The extension language for the Emacs editor
@@ -47,8 +48,14 @@ Or run examples for a specific dialect:
 
 ```
 sh scripts/run-common-lisp.sh
+sh scripts/run-clisp.sh
 sh scripts/run-clojure.sh
-# etc.
+sh scripts/run-scheme.sh
+sh scripts/run-emacs-lisp.sh
+sh scripts/run-racket.sh
+sh scripts/run-hy.sh
+sh scripts/run-fennel.sh
+sh scripts/run-janet.sh
 ```
 
 ## Benchmarks

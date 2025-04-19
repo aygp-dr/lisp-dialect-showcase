@@ -2,6 +2,7 @@
 # Simple installation of all Lisp dialects using pkg
 sudo pkg install -y \
   lang/sbcl \
+  lang/clisp \
   lang/clojure \
   devel/leiningen \
   lang/chicken \

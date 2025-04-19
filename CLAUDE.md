@@ -3,7 +3,8 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Build & Test Commands
-- **Common Lisp**: `sbcl --load file.lisp`, `sbcl --script file.lisp`, `sbcl --load file.lisp --eval '(package:function)'`
+- **Common Lisp (SBCL)**: `sbcl --load file.lisp`, `sbcl --script file.lisp`, `sbcl --load file.lisp --eval '(package:function)'`
+- **Common Lisp (CLISP)**: `clisp -q file.lisp`, `clisp -q -x '(expression)'`, `clisp -q -i file.lisp -x '(function)'`
 - **Clojure**: `clj -M src/file.clj`, `clojure -e '(expression)'`
 - **Scheme**: `guile file.scm`, `chicken-test file.scm`
 - **Emacs Lisp**: `emacs --batch --load file.el --eval '(function)'`

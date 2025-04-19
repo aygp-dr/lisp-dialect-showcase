@@ -4,10 +4,14 @@
 echo "Benchmarking Fibonacci (n=30):"
 echo "=============================="
 
-# Common Lisp
-echo "Common Lisp:"
+# Common Lisp (SBCL)
+echo "Common Lisp (SBCL):"
 time sbcl --noinform --eval "(defun fib (n) (if (< n 2) n (+ (fib (- n 1)) (fib (- n 2)))))" \
           --eval "(time (fib 30))" --eval "(quit)" 2>&1 | grep "Evaluation took"
+
+# CLISP
+echo "CLISP:"
+time clisp -q -x "(defun fib (n) (if (< n 2) n (+ (fib (- n 1)) (fib (- n 2))))) (time (fib 30))"
 
 # Clojure
 echo "Clojure:"

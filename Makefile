@@ -59,10 +59,11 @@ deps:
 	@echo "Installing dependencies..."
 	@sh scripts/deps.sh
 
-# Common Lisp (SBCL)
+# Common Lisp (SBCL and CLISP)
 common-lisp:
-	@echo "Installing Common Lisp (SBCL)..."
+	@echo "Installing Common Lisp (SBCL and CLISP)..."
 	@pkg install -y lang/sbcl
+	@pkg install -y lang/clisp
 	@pkg install -y devel/quicklisp
 
 # Clojure
@@ -109,6 +110,7 @@ janet:
 run:
 	@echo "Running all examples..."
 	@sh scripts/run-common-lisp.sh
+	@sh scripts/run-clisp.sh
 	@sh scripts/run-clojure.sh
 	@sh scripts/run-scheme.sh
 	@sh scripts/run-emacs-lisp.sh
