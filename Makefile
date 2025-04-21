@@ -1,7 +1,7 @@
 # Makefile for lisp-dialect-showcase
 # Installs and configures all needed Lisp dialects on FreeBSD
 
-.PHONY: all install clean common-lisp clojure scheme emacs-lisp racket hy fennel janet deps run help tangle detangle
+.PHONY: all install clean common-lisp clojure scheme emacs-lisp racket hy fennel janet deps run help tangle detangle lint-scripts
 
 # Use gmake on FreeBSD systems, define EMACS to point to the installed Emacs binary
 EMACS ?= emacs
@@ -18,12 +18,13 @@ help:
 	@echo "Makefile for Lisp Dialect Showcase (FreeBSD compatible)"
 	@echo ""
 	@echo "Targets:"
-	@echo "  install   - Install all Lisp dialects"
-	@echo "  tangle    - Extract code blocks from all .org files"
-	@echo "  detangle  - Update .org files from source files"
-	@echo "  clean     - Remove tangled files and build artifacts"
-	@echo "  run       - Run all examples"
-	@echo "  help      - Show this help message"
+	@echo "  install     - Install all Lisp dialects"
+	@echo "  tangle      - Extract code blocks from all .org files"
+	@echo "  detangle    - Update .org files from source files"
+	@echo "  clean       - Remove tangled files and build artifacts"
+	@echo "  run         - Run all examples"
+	@echo "  lint-scripts - Run shellcheck on all shell scripts"
+	@echo "  help        - Show this help message"
 
 # Create directories if they don't exist
 src:
@@ -59,11 +60,10 @@ deps:
 	@echo "Installing dependencies..."
 	@sh scripts/deps.sh
 
-# Common Lisp (SBCL and CLISP)
+# Common Lisp (SBCL)
 common-lisp:
-	@echo "Installing Common Lisp (SBCL and CLISP)..."
+	@echo "Installing Common Lisp (SBCL)..."
 	@pkg install -y lang/sbcl
-	@pkg install -y lang/clisp
 	@pkg install -y devel/quicklisp
 
 # Clojure
@@ -110,7 +110,6 @@ janet:
 run:
 	@echo "Running all examples..."
 	@sh scripts/run-common-lisp.sh
-	@sh scripts/run-clisp.sh
 	@sh scripts/run-clojure.sh
 	@sh scripts/run-scheme.sh
 	@sh scripts/run-emacs-lisp.sh
@@ -126,3 +125,8 @@ clean:
 	@find . -type f -path "./src/*" -delete
 	@find . -name "*.o" -delete
 	@find . -name "*.fasl" -delete
+
+# Lint shell scripts
+lint-scripts:
+	@echo "Linting shell scripts..."
+	@find scripts -name "*.sh" -type f -print0 | xargs -0 shellcheck -e SC2086

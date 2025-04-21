@@ -13,8 +13,8 @@ guile src/scheme/fizzbuzz.scm
 guile src/scheme/quicksort.scm
 
 # Run advanced examples
-echo "\n==== Running Advanced Examples ===="
-echo "\n--- Quantum Computing Simulator ---"
+printf "\n==== Running Advanced Examples ====\n"
+printf "\n--- Quantum Computing Simulator ---\n"
 guile src/scheme/quantum-simulator.scm
-echo "\n--- Stack-Based Computer Simulator ---"
+printf "\n--- Stack-Based Computer Simulator ---\n"
 guile src/scheme/stack-machine.scm

@@ -3,26 +3,28 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Build & Test Commands
-- **Common Lisp (SBCL)**: `sbcl --load file.lisp`, `sbcl --script file.lisp`, `sbcl --load file.lisp --eval '(package:function)'`
-- **Common Lisp (CLISP)**: `clisp -q file.lisp`, `clisp -q -x '(expression)'`, `clisp -q -i file.lisp -x '(function)'`
-- **Clojure**: `clj -M src/file.clj`, `clojure -e '(expression)'`
-- **Scheme**: `guile file.scm`, `chicken-test file.scm`
-- **Emacs Lisp**: `emacs --batch --load file.el --eval '(function)'`
-- **Racket**: `racket file.rkt`, `raco test file.rkt` 
-- **Hy**: `hy file.hy`, `hy -c 'expression'`
-- **Fennel**: `fennel file.fnl`, `fennel -e 'expression'`
-- **Janet**: `janet file.janet`, `janet -e 'expression'`
-- **Run Scripts**: `sh scripts/run-dialect.sh` for each dialect
-- **Install**: `make install` (on FreeBSD), `sh scripts/deps-simple.sh` (other systems)
+- **Common Lisp (SBCL)**: `sbcl --load src/common-lisp/file.lisp --eval '(package:function)' --quit`
+- **Clojure**: `clj -M src/clojure/file.clj`
+- **Scheme**: `guile src/scheme/file.scm`
+- **Emacs Lisp**: `emacs --batch --load src/emacs-lisp/file.el --eval '(function)'`
+- **Racket**: `racket src/racket/file.rkt`
+- **Hy**: `hy src/hy/file.hy`
+- **Fennel**: `fennel src/fennel/file.fnl`
+- **Janet**: `janet src/janet/file.janet`
+- **Benchmark**: `sh scripts/benchmark.sh` (compares performance across dialects)
+- **Run All**: `make run` or `sh scripts/run-[dialect].sh` for specific dialect examples
+- **Installation**: `make install` (FreeBSD) or `sh scripts/deps-simple.sh` (other systems)
+- **Org-mode**: `make tangle` (extract code from SETUP.org), `make detangle` (update SETUP.org from source)
+- **Linting**: `make lint-scripts` (run shellcheck on all shell scripts)
 
 ## Code Style Guidelines
 - **Formatting**: 2-space indentation across all dialects
 - **Naming**: Use kebab-case (hyphenated-names) for functions and variables
-- **Function Style**: Write pure functions when possible, minimize side effects
-- **Packages/Namespaces**: Use proper namespace/package declarations for each dialect
+- **Packages**: Proper namespace declarations (e.g., defpackage in CL, ns in Clojure)
 - **Documentation**: Include docstrings for functions, explain complex algorithms
-- **Error Handling**: Use appropriate error handling for each dialect (conditions in CL, exceptions in Clojure)
-- **Types**: Include type declarations where applicable (SBCL declarations, Typed Racket)
-- **Testing**: Create doctests or test files for new functionality
+- **Error Handling**: Use appropriate dialect-specific error handling (conditions in CL, exceptions in Clojure)
+- **Function Style**: Write pure functions when possible, minimize side effects
+- **Implementation**: Provide multiple approaches (recursive, iterative, etc.) for learning purposes
+- **Examples**: Include run-examples function for demonstration in each file
 - **Parentheses**: Balance carefully, use proper indentation to make nesting clear
-- **Imports**: Follow each dialect's conventions for imports and module organization
+- **Testing**: Run dialect-specific tests through associated run scripts
