@@ -1,7 +1,7 @@
 # Makefile for lisp-dialect-showcase
 # Installs and configures all needed Lisp dialects on FreeBSD
 
-.PHONY: all install clean common-lisp clojure scheme emacs-lisp racket hy fennel janet deps run help tangle detangle lint-scripts
+.PHONY: all install clean common-lisp clojure scheme emacs-lisp racket hy fennel janet deps run computational-models help tangle detangle lint-scripts
 
 # Use gmake on FreeBSD systems, define EMACS to point to the installed Emacs binary
 EMACS ?= emacs
@@ -23,6 +23,7 @@ help:
 	@echo "  detangle    - Update .org files from source files"
 	@echo "  clean       - Remove tangled files and build artifacts"
 	@echo "  run         - Run all examples"
+	@echo "  computational-models - Run computational models demonstrations"
 	@echo "  lint-scripts - Run shellcheck on all shell scripts"
 	@echo "  help        - Show this help message"
 
@@ -117,6 +118,11 @@ run:
 	@sh scripts/run-hy.sh
 	@sh scripts/run-fennel.sh
 	@sh scripts/run-janet.sh
+
+# Run computational models
+computational-models:
+	@echo "Running computational models demonstrations..."
+	@sh scripts/run-computational-models.sh
 
 # Clean up
 clean:

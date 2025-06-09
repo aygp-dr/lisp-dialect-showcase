@@ -2,6 +2,7 @@
 #+AUTHOR: Aidan Pace <apace@defrecord.com>
 #+DATE: 2025-06-09
 #+PROPERTY: header-args :padline yes :comments both
+#+PROPERTY: header-args:lisp :comments ;; :tangle-mode (identity #o644)
 #+OPTIONS: toc:3 num:t
 
 * common-lisp Examples

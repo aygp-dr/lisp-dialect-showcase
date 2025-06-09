@@ -135,67 +135,78 @@
         
         (else (error "Unknown operation:" op))))))
 
-;; Placeholder for Cellular Automaton (would reference a life.scm implementation)
+;; Cellular Automaton (Game of Life) Interface Wrapper
+;; Assumes life.scm is loaded
 (define (make-life-computer . args)
-  (let ((width (if (null? args) 20 (car args)))
-        (height (if (or (null? args) (null? (cdr args))) 20 (cadr args)))
-        (grid (make-vector (* width height) #f)))
+  (let* ((width (if (null? args) 20 (car args)))
+         (height (if (or (null? args) (null? (cdr args))) 20 (cadr args)))
+         (life (make-life width height)))
     
     ;; Interface implementation
     (lambda (op . args)
       (case op
         ((initialize)
-         ;; Reset grid
-         (vector-fill! grid #f))
+         ;; Reset the grid
+         (life 'clear))
         
         ((step)
          ;; Compute one generation
-         'step-placeholder)
+         (life 'step))
         
         ((run)
          (let ((steps (if (null? args) 1 (car args))))
-           (do ((i 0 (+ i 1)))
-               ((>= i steps))
-             ((self 'step)))))
+           (life 'run steps)))
         
         ((state)
-         grid)
+         (life 'state))
+        
+        ((set-pattern)
+         (if (not (null? args))
+             (life 'pattern (car args) 
+                  (if (null? (cdr args)) 5 (cadr args))
+                  (if (or (null? (cdr args)) (null? (cddr args))) 5 (caddr args)))))
+        
+        ((display)
+         (life 'display))
         
         ((reset)
-         ((self 'initialize)))
+         (life 'clear))
         
         (else (error "Unknown operation:" op))))))
 
-;; Placeholder for Turing Machine (would reference a turing.scm implementation)
+;; Turing Machine Interface Wrapper
+;; Assumes turing-machine.scm is loaded
 (define (make-turing-machine . args)
-  (let ((tape (make-vector 100 0))
-        (position 50)
-        (state 'q0))
+  (let* ((initial-tape (if (null? args) '() (car args)))
+         (tm (make-turing-machine initial-tape)))
     
     ;; Interface implementation
     (lambda (op . args)
       (case op
         ((initialize)
-         ;; Reset tape, position, and state
-         (vector-fill! tape 0)
-         (set! position 50)
-         (set! state 'q0))
+         ;; Reset the Turing machine
+         (tm 'reset))
         
         ((step)
          ;; Execute one Turing Machine step
-         'step-placeholder)
+         (tm 'step))
         
         ((run)
          (let ((steps (if (null? args) 1 (car args))))
-           (do ((i 0 (+ i 1)))
-               ((>= i steps))
-             ((self 'step)))))
+           (tm 'run steps)))
+        
+        ((add-transition)
+         (if (not (null? args))
+             (apply tm (cons 'add-transition args))))
         
         ((state)
-         (list 'tape tape 'position position 'state state))
+         (tm 'status))
+        
+        ((display)
+         (tm 'display))
         
         ((reset)
-         ((self 'initialize)))
+         (tm 'reset))
         
         (else (error "Unknown operation:" op))))))
 
@@ -241,6 +252,52 @@
     (sm 'state)
     (newline)))
 
+;; Demonstrate the cellular automaton (Game of Life) model
+(define (demo-life)
+  (let ((life (make-computation-model 'cellular 20 10)))
+    (display "Cellular Automaton (Game of Life) Demonstration\n")
+    (display "============================================\n")
+    
+    ;; Set up a glider pattern
+    (life 'set-pattern 'glider 2 2)
+    
+    (display "Initial state:\n")
+    (life 'display)
+    (newline)
+    
+    (display "After 5 generations:\n")
+    (life 'run 5)
+    (life 'display)
+    (newline)))
+
+;; Demonstrate the Turing machine model
+(define (demo-turing)
+  (let ((tm (make-computation-model 'turing)))
+    (display "Turing Machine Demonstration\n")
+    (display "===========================\n")
+    
+    ;; Set up a binary incrementer
+    (tm 'add-transition 'q0 0 'q0 0 'right)
+    (tm 'add-transition 'q0 1 'q0 1 'right)
+    (tm 'add-transition 'q0 #f 'q1 #f 'left)
+    (tm 'add-transition 'q1 0 'qaccept 1 'stay)
+    (tm 'add-transition 'q1 1 'q1 0 'left)
+    (tm 'add-transition 'q1 #f 'qaccept 1 'stay)
+    
+    ;; Display initial state
+    (display "Initial state (before setting tape):\n")
+    (tm 'display)
+    (newline)
+    
+    ;; Run the machine
+    (display "Running the binary incrementer...\n")
+    (tm 'run)
+    
+    ;; Display final state
+    (display "Final state:\n")
+    (tm 'display)
+    (newline)))
+
 ;; Run all model demonstrations
 (define (run-computational-models-demo)
   (display "Computational Models Integration Framework\n")
@@ -249,6 +306,10 @@
   (demo-quantum)
   (newline)
   (demo-stack)
+  (newline)
+  (demo-life)
+  (newline)
+  (demo-turing)
   (newline)
   
   (display "Integration framework demonstration complete.\n"))
