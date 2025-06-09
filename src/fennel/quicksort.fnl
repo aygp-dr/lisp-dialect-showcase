@@ -1,3 +1,7 @@
+;; quicksort
+
+
+;; [[file:../../showcase-fennel.org::*quicksort][quicksort:1]]
 ;; Quicksort implementation
 (fn quicksort [arr]
   (if (or (= (length arr) 0) (= (length arr) 1))
@@ -25,3 +29,4 @@
   (print (table.concat (quicksort numbers) ", ")))
 
 (run-examples)
+;; quicksort:1 ends here

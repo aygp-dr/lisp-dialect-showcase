@@ -2,10 +2,10 @@
 
 
 ;; [[file:../../showcase-clojure.org::*fizzbuzz][fizzbuzz:1]]
-(ns clojure.fizzbuzz
+(prn (binding [*out* (java.io.StringWriter.)](ns clojure.fizzbuzz
   (:gen-class))
 
-;; FizzBuzz using cond
+
 (defn fizzbuzz-cond [n]
   (map (fn [i]
          (cond
@@ -15,7 +15,7 @@
            :else i))
        (range 1 (inc n))))
 
-;; FizzBuzz using pattern matching
+
 (defn fizzbuzz-match [n]
   (for [i (range 1 (inc n))]
     (condp #(zero? (mod %2 %1)) i
@@ -24,7 +24,7 @@
       5 "Buzz"
       i)))
 
-;; FizzBuzz using case with remainder vector
+
 (defn fizzbuzz-case [n]
   (for [i (range 1 (inc n))
         :let [div3 (zero? (mod i 3))
@@ -35,7 +35,7 @@
       [false true] "Buzz"
       i)))
 
-;; Example usage
+
 (defn run-examples []
   (println "FizzBuzz (1-20) using cond:")
   (doseq [item (fizzbuzz-cond 20)]
@@ -44,5 +44,5 @@
   (println (fizzbuzz-match 20)))
 
 (defn -main []
-  (run-examples))
+  (run-examples))))
 ;; fizzbuzz:1 ends here

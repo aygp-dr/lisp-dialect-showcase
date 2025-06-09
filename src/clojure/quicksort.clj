@@ -2,10 +2,10 @@
 
 
 ;; [[file:../../showcase-clojure.org::*quicksort][quicksort:1]]
-(ns clojure.quicksort
+(prn (binding [*out* (java.io.StringWriter.)](ns clojure.quicksort
   (:gen-class))
 
-;; Functional implementation of quicksort
+
 (defn quicksort [coll]
   (if (empty? coll)
     []
@@ -15,7 +15,7 @@
               [pivot]
               (quicksort (filter #(>= % pivot) rest-coll))))))
 
-;; Using partition
+
 (defn quicksort-partition [coll]
   (if (or (empty? coll) (= 1 (count coll)))
     coll
@@ -26,7 +26,7 @@
               (quicksort-partition (get parts 1 []))
               (quicksort-partition (get parts 0 []))))))
 
-;; Example usage
+
 (defn run-examples []
   (let [numbers [3 1 4 1 5 9 2 6 5 3 5]]
     (println "Original collection:" numbers)
@@ -34,5 +34,5 @@
     (println "Quicksort with partition:" (quicksort-partition numbers))))
 
 (defn -main []
-  (run-examples))
+  (run-examples))))
 ;; quicksort:1 ends here

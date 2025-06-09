@@ -1,3 +1,7 @@
+;; factorial
+
+
+;; [[file:../../showcase-hy.org::*factorial][factorial:1]]
 #!/usr/bin/env hy
 
 ;; Recursive implementation
@@ -27,3 +31,4 @@
 
 (when (= __name__ "__main__")
   (run-examples))
+;; factorial:1 ends here

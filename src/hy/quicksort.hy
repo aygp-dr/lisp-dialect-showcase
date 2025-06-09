@@ -1,3 +1,7 @@
+;; quicksort
+
+
+;; [[file:../../showcase-hy.org::*quicksort][quicksort:1]]
 #!/usr/bin/env hy
 
 ;; Quicksort implementation
@@ -30,3 +34,4 @@
 
 (when (= __name__ "__main__")
   (run-examples))
+;; quicksort:1 ends here

@@ -1,3 +1,7 @@
+;; fizzbuzz
+
+
+;; [[file:../../showcase-scheme.org::*fizzbuzz][fizzbuzz:1]]
 ;; Helper: display FizzBuzz for a number
 (define (fizzbuzz-number n)
   (cond ((= (remainder n 15) 0) "FizzBuzz")
@@ -31,3 +35,4 @@
   (newline))
 
 (run-examples)
+;; fizzbuzz:1 ends here

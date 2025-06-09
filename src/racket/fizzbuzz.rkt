@@ -1,3 +1,7 @@
+;; fizzbuzz
+
+
+;; [[file:../../showcase-racket.org::*fizzbuzz][fizzbuzz:1]]
 #lang racket
 
 ;; FizzBuzz using cond
@@ -37,3 +41,4 @@
 
 (module+ main
   (run-examples))
+;; fizzbuzz:1 ends here

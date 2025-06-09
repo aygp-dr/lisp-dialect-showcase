@@ -1,3 +1,7 @@
+;; quicksort
+
+
+;; [[file:../../showcase-racket.org::*quicksort][quicksort:1]]
 #lang racket
 
 ;; Quicksort implementation using filter
@@ -45,3 +49,4 @@
 
 (module+ main
   (run-examples))
+;; quicksort:1 ends here

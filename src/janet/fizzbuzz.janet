@@ -1,3 +1,7 @@
+;; fizzbuzz
+
+
+;; [[file:../../showcase-janet.org::*fizzbuzz][fizzbuzz:1]]
 # FizzBuzz implementation
 (defn fizzbuzz [n]
   (for i 1 (+ n 1)
@@ -27,3 +31,4 @@
   (printf "%j" (fizzbuzz-array 20)))
 
 (run-examples)
+;; fizzbuzz:1 ends here

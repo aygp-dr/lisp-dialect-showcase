@@ -1,3 +1,7 @@
+;; factorial
+
+
+;; [[file:../../showcase-racket.org::*factorial][factorial:1]]
 #lang racket
 
 ;; Recursive implementation
@@ -26,3 +30,4 @@
 
 (module+ main
   (run-examples))
+;; factorial:1 ends here

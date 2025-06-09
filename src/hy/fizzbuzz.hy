@@ -1,3 +1,7 @@
+;; fizzbuzz
+
+
+;; [[file:../../showcase-hy.org::*fizzbuzz][fizzbuzz:1]]
 #!/usr/bin/env hy
 
 ;; FizzBuzz implementation
@@ -33,3 +37,4 @@
 
 (when (= __name__ "__main__")
   (run-examples))
+;; fizzbuzz:1 ends here

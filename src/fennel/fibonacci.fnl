@@ -1,3 +1,7 @@
+;; fibonacci
+
+
+;; [[file:../../showcase-fennel.org::*fibonacci][fibonacci:1]]
 ;; Recursive implementation
 (fn fib-recursive [n]
   (if (= n 0) 0
@@ -32,3 +36,4 @@
   (print (.. "Fibonacci of 10 (memoized): " (fib-memo 10))))
 
 (run-examples)
+;; fibonacci:1 ends here

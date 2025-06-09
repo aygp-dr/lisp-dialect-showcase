@@ -1,3 +1,7 @@
+;; fibonacci
+
+
+;; [[file:../../showcase-scheme.org::*fibonacci][fibonacci:1]]
 ;; Recursive implementation
 (define (fib-recursive n)
   (cond ((= n 0) 0)
@@ -39,3 +43,4 @@
   (newline))
 
 (run-examples)
+;; fibonacci:1 ends here

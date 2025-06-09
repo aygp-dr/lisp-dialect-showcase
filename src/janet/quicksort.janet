@@ -1,3 +1,7 @@
+;; quicksort
+
+
+;; [[file:../../showcase-janet.org::*quicksort][quicksort:1]]
 # Quicksort implementation
 (defn quicksort [arr]
   (if (or (= (length arr) 0) (= (length arr) 1))
@@ -15,3 +19,4 @@
   (printf "Sorted array: %j" (quicksort numbers)))
 
 (run-examples)
+;; quicksort:1 ends here

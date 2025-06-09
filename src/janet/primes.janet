@@ -1,3 +1,7 @@
+;; primes
+
+
+;; [[file:../../showcase-janet.org::*primes][primes:1]]
 # Check if a number is prime
 (defn prime? [n]
   (when (> n 1)
@@ -47,3 +51,4 @@
   (printf "Is 15 prime? %s" (if (prime? 15) "Yes" "No")))
 
 (run-examples)
+;; primes:1 ends here

@@ -2,9 +2,13 @@
 
 
 ;; [[file:../../showcase-common-lisp.org::*quicksort][quicksort:1]]
+;; Quicksort
+
+
+;; [[file:../../SETUP.org::*Quicksort][Quicksort:1]]
 (defpackage :cl-quicksort
   (:use :cl)
-  (:export :quicksort :quicksort-functional :run-examples))
+  (:export :quicksort :quicksort-functional))
 
 (in-package :cl-quicksort)
 
@@ -52,4 +56,5 @@
     (format t "Original list unchanged: ~a~%" list1)
     (format t "Destructive quicksort (list): ~a~%" (quicksort list2))
     (format t "Destructive quicksort (vector): ~a~%" (quicksort vector1))))
+;; Quicksort:1 ends here
 ;; quicksort:1 ends here

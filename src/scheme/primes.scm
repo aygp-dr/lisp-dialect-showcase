@@ -1,3 +1,7 @@
+;; primes
+
+
+;; [[file:../../showcase-scheme.org::*primes][primes:1]]
 ;; Helper function: square root
 (define (square x) (* x x))
 
@@ -54,3 +58,4 @@
   (newline))
 
 (run-examples)
+;; primes:1 ends here

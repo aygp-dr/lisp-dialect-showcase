@@ -2,10 +2,10 @@
 
 
 ;; [[file:../../showcase-clojure.org::*primes][primes:1]]
-(ns clojure.primes
+(prn (binding [*out* (java.io.StringWriter.)](ns clojure.primes
   (:gen-class))
 
-;; Check if a number is prime
+
 (defn prime? [n]
   (cond
     (<= n 1) false
@@ -14,7 +14,7 @@
     :else (not-any? #(zero? (mod n %))
                     (range 3 (inc (Math/sqrt n)) 2))))
 
-;; Sieve of Eratosthenes
+
 (defn sieve-of-eratosthenes [n]
   (let [n (int n)]
     (if (<= n 1)
@@ -29,11 +29,11 @@
               (aset sieve j false))))
         (filter #(aget sieve %) (range 2 (inc n)))))))
 
-;; Generate primes up to n
+
 (defn primes-up-to [n]
   (filter prime? (range 2 (inc n))))
 
-;; Example usage
+
 (defn run-examples []
   (println "Primes up to 20:" (primes-up-to 20))
   (println "Primes up to 20 (sieve):" (sieve-of-eratosthenes 20))
@@ -41,5 +41,5 @@
   (println "Is 15 prime?" (prime? 15)))
 
 (defn -main []
-  (run-examples))
+  (run-examples))))
 ;; primes:1 ends here

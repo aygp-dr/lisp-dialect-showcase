@@ -1,3 +1,7 @@
+;; fizzbuzz
+
+
+;; [[file:../../showcase-fennel.org::*fizzbuzz][fizzbuzz:1]]
 ;; FizzBuzz implementation
 (fn fizzbuzz [n]
   (for [i 1 n]
@@ -29,3 +33,4 @@
   (print output))
 
 (run-examples)
+;; fizzbuzz:1 ends here

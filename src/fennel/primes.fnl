@@ -1,3 +1,7 @@
+;; primes
+
+
+;; [[file:../../showcase-fennel.org::*primes][primes:1]]
 ;; Check if a number is prime
 (fn is-prime? [n]
   (when (> n 1)
@@ -55,3 +59,4 @@
   (print (.. "Is 15 prime? " (if (is-prime? 15) "Yes" "No"))))
 
 (run-examples)
+;; primes:1 ends here

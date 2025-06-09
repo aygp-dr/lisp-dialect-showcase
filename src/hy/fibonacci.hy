@@ -1,3 +1,7 @@
+;; fibonacci
+
+
+;; [[file:../../showcase-hy.org::*fibonacci][fibonacci:1]]
 #!/usr/bin/env hy
 
 ;; Recursive implementation
@@ -41,3 +45,4 @@
 
 (when (= __name__ "__main__")
   (run-examples))
+;; fibonacci:1 ends here

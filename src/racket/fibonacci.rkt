@@ -1,3 +1,7 @@
+;; fibonacci
+
+
+;; [[file:../../showcase-racket.org::*fibonacci][fibonacci:1]]
 #lang racket
 
 ;; Recursive implementation
@@ -37,3 +41,4 @@
 
 (module+ main
   (run-examples))
+;; fibonacci:1 ends here

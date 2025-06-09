@@ -1,3 +1,7 @@
+;; fibonacci
+
+
+;; [[file:../../showcase-janet.org::*fibonacci][fibonacci:1]]
 # Recursive implementation
 (defn fib-recursive [n]
   (cond
@@ -35,3 +39,4 @@
   (printf "Fibonacci of 10 (tail-recursive): %d" (fib-tail 10)))
 
 (run-examples)
+;; fibonacci:1 ends here

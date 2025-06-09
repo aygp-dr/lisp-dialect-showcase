@@ -1,7 +1,3 @@
-;; fibonacci
-
-
-;; [[file:../../showcase-emacs-lisp.org::*fibonacci][fibonacci:1]]
 ;;; fibonacci.el --- Fibonacci implementations in Emacs Lisp
 
 ;;; Commentary:
@@ -55,4 +51,3 @@
 
 (provide 'fibonacci)
 ;;; fibonacci.el ends here
-;; fibonacci:1 ends here

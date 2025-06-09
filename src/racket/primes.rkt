@@ -1,3 +1,7 @@
+;; primes
+
+
+;; [[file:../../showcase-racket.org::*primes][primes:1]]
 #lang racket
 
 ;; Check if a number is prime
@@ -38,3 +42,4 @@
 
 (module+ main
   (run-examples))
+;; primes:1 ends here

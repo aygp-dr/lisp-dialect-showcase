@@ -1,3 +1,7 @@
+;;; factorial
+
+
+;;; [[file:../../showcase-janet.org::*factorial][factorial:1]]
 # Recursive implementation
 (defn factorial-recursive [n]
   (if (<= n 1)
@@ -25,3 +29,4 @@
   (printf "Factorial of 5 (iterative): %d" (factorial-iterative 5)))
 
 (run-examples)
+;;; factorial:1 ends here

@@ -1,3 +1,7 @@
+;; primes
+
+
+;; [[file:../../showcase-hy.org::*primes][primes:1]]
 #!/usr/bin/env hy
 
 ;; Check if a number is prime
@@ -38,3 +42,4 @@
 
 (when (= __name__ "__main__")
   (run-examples))
+;; primes:1 ends here
