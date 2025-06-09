@@ -1,10 +1,10 @@
-;; Fibonacci
+;; fibonacci
 
 
-;; [[file:../../SETUP.org::*Fibonacci][Fibonacci:1]]
+;; [[file:../../showcase-common-lisp.org::*fibonacci][fibonacci:1]]
 (defpackage :cl-fibonacci
   (:use :cl)
-  (:export :fib-recursive :fib-iterative :fib-memo))
+  (:export :fib-recursive :fib-iterative :fib-memo :run-examples))
 
 (in-package :cl-fibonacci)
 
@@ -43,4 +43,4 @@
   (format t "Fibonacci of 10 (recursive): ~a~%" (fib-recursive 10))
   (format t "Fibonacci of 10 (iterative): ~a~%" (fib-iterative 10))
   (format t "Fibonacci of 10 (memoized): ~a~%" (fib-memo 10)))
-;; Fibonacci:1 ends here
+;; fibonacci:1 ends here

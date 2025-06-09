@@ -1,0 +1,1056 @@
+#+TITLE: scheme Examples
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: 2025-06-09
+#+PROPERTY: header-args :padline yes :comments both
+#+OPTIONS: toc:3 num:t
+
+* scheme Examples
+
+** computational-models-guide
+
+#+BEGIN_SRC scheme :tangle src/scheme/computational-models-guide.scm :mkdirp yes
+;; Computational Models Integration Guide
+;; A framework for unifying different computational models in Scheme
+
+;;; Generic Computational Model Interface
+
+;; Factory function to create computational models of different types
+(define (make-computation-model type . options)
+  (case type
+    ((quantum) (apply make-quantum-computer options))
+    ((logic) (apply make-virtual-computer options))
+    ((stack) (apply make-stack-machine options))
+    ((cellular) (apply make-life-computer options))
+    ((turing) (apply make-turing-machine options))
+    (else (error "Unknown computation model type:" type))))
+
+;;; Model Implementations
+
+;; Quantum Computer Interface Wrapper
+;; Assumes quantum-simulator.scm has been loaded
+(define (make-quantum-computer)
+  (let ((qubit (new-qubit))
+        (measurements '()))
+    
+    ;; Interface implementation
+    (lambda (op . args)
+      (case op
+        ((initialize)
+         (set! qubit (new-qubit))
+         (set! measurements '()))
+        
+        ((step)
+         (let ((gate (if (null? args) 'h (car args))))
+           (case gate
+             ((x) (set! qubit (apply-x qubit)))
+             ((h) (set! qubit (apply-h qubit)))
+             ((z) (set! qubit (apply-z qubit)))
+             ((measure) 
+              (let ((result (measure-qubit! qubit)))
+                (set! measurements (cons result measurements))
+                result))
+             (else (error "Unknown quantum gate:" gate)))))
+        
+        ((run)
+         (let ((steps (if (null? args) 1 (car args)))
+               (gate (if (or (null? args) (null? (cdr args))) 'h (cadr args))))
+           (do ((i 0 (+ i 1)))
+               ((>= i steps))
+             (if (eq? gate 'measure)
+                 ((lambda () (display "Measurement result: ") 
+                           (display ((self 'step) 'measure))
+                           (newline)))
+                 ((lambda () ((self 'step) gate)))))))
+        
+        ((state)
+         (list 'qubit qubit 'measurements measurements))
+        
+        ((reset)
+         ((self 'initialize)))
+        
+        (else (error "Unknown operation:" op))))))
+
+;; Logic Computer Interface Wrapper
+;; Assumes logic-gates.scm is loaded
+(define (make-virtual-computer . args)
+  (let ((memory-size (if (null? args) 256 (car args)))
+        (memory (make-vector 256 #f))
+        (registers (make-vector 8 #f)))
+    
+    ;; Define the interface function
+    (define (self op . args)
+      (case op
+        ((initialize)
+         (vector-fill! memory #f)
+         (vector-fill! registers #f))
+        
+        ((step)
+         (let ((instr (if (null? args) 'noop (car args))))
+           (case instr
+             ((and) (logic-and))
+             ((or) (logic-or))
+             ((not) (logic-not))
+             ((add) (adder))
+             (else (error "Unknown logic instruction:" instr)))))
+        
+        ((run)
+         (let ((steps (if (null? args) 1 (car args))))
+           (do ((i 0 (+ i 1)))
+               ((>= i steps))
+             ((self 'step)))))
+        
+        ((state)
+         (list 'memory memory 'registers registers))
+        
+        ((reset)
+         ((self 'initialize)))
+        
+        (else (error "Unknown operation:" op))))
+    
+    ;; Initialize and return the interface
+    (self 'initialize)
+    self))
+
+;; Stack Machine Interface Wrapper
+;; Assumes stack-machine.scm is loaded
+(define (make-stack-machine . args)
+  (let ((memory-size (if (null? args) 100 (car args)))
+        (machine (make-stack-machine memory-size)))
+    
+    ;; Interface implementation
+    (lambda (op . args)
+      (case op
+        ((initialize)
+         (machine 'reset))
+        
+        ((step)
+         (machine 'step))
+        
+        ((run)
+         (let ((steps (if (null? args) 1 (car args))))
+           (if (= steps -1)
+               (machine 'run)  ; Run until halted
+               (do ((i 0 (+ i 1)))
+                   ((>= i steps))
+                 (machine 'step)))))
+        
+        ((state)
+         (machine 'status))
+        
+        ((reset)
+         (machine 'reset))
+        
+        ((load)
+         (if (not (null? args))
+             (machine 'load (car args))))
+        
+        (else (error "Unknown operation:" op))))))
+
+;; Placeholder for Cellular Automaton (would reference a life.scm implementation)
+(define (make-life-computer . args)
+  (let ((width (if (null? args) 20 (car args)))
+        (height (if (or (null? args) (null? (cdr args))) 20 (cadr args)))
+        (grid (make-vector (* width height) #f)))
+    
+    ;; Interface implementation
+    (lambda (op . args)
+      (case op
+        ((initialize)
+         ;; Reset grid
+         (vector-fill! grid #f))
+        
+        ((step)
+         ;; Compute one generation
+         'step-placeholder)
+        
+        ((run)
+         (let ((steps (if (null? args) 1 (car args))))
+           (do ((i 0 (+ i 1)))
+               ((>= i steps))
+             ((self 'step)))))
+        
+        ((state)
+         grid)
+        
+        ((reset)
+         ((self 'initialize)))
+        
+        (else (error "Unknown operation:" op))))))
+
+;; Placeholder for Turing Machine (would reference a turing.scm implementation)
+(define (make-turing-machine . args)
+  (let ((tape (make-vector 100 0))
+        (position 50)
+        (state 'q0))
+    
+    ;; Interface implementation
+    (lambda (op . args)
+      (case op
+        ((initialize)
+         ;; Reset tape, position, and state
+         (vector-fill! tape 0)
+         (set! position 50)
+         (set! state 'q0))
+        
+        ((step)
+         ;; Execute one Turing Machine step
+         'step-placeholder)
+        
+        ((run)
+         (let ((steps (if (null? args) 1 (car args))))
+           (do ((i 0 (+ i 1)))
+               ((>= i steps))
+             ((self 'step)))))
+        
+        ((state)
+         (list 'tape tape 'position position 'state state))
+        
+        ((reset)
+         ((self 'initialize)))
+        
+        (else (error "Unknown operation:" op))))))
+
+;;; Demonstration Functions
+
+;; Demonstrate the quantum computer model
+(define (demo-quantum)
+  (let ((qc (make-computation-model 'quantum)))
+    (display "Quantum Computer Demonstration\n")
+    (display "==============================\n")
+    
+    (display "Initial state: ")
+    (display (qc 'state))
+    (newline)
+    
+    (display "Applying H gate: ")
+    (qc 'step 'h)
+    (display (qc 'state))
+    (newline)
+    
+    (display "Measuring: ")
+    (qc 'step 'measure)
+    (display (qc 'state))
+    (newline)))
+
+;; Demonstrate the stack machine model
+(define (demo-stack)
+  (let ((sm (make-computation-model 'stack 100)))
+    (display "Stack Machine Demonstration\n")
+    (display "===========================\n")
+    
+    ;; Load the factorial program defined in stack-machine.scm
+    (sm 'load factorial-program)
+    
+    (display "Initial state:\n")
+    (sm 'state)
+    (newline)
+    
+    (display "Running program...\n")
+    (sm 'run -1)  ; Run until halted
+    
+    (display "Final state:\n")
+    (sm 'state)
+    (newline)))
+
+;; Run all model demonstrations
+(define (run-computational-models-demo)
+  (display "Computational Models Integration Framework\n")
+  (display "========================================\n\n")
+  
+  (demo-quantum)
+  (newline)
+  (demo-stack)
+  (newline)
+  
+  (display "Integration framework demonstration complete.\n"))
+
+;; The demos would be run if this file is loaded directly
+;; Note: This requires the model implementations to be loaded first#+END_SRC
+
+** factorial
+
+#+BEGIN_SRC scheme :tangle src/scheme/factorial.scm :mkdirp yes
+;; Recursive implementation
+(define (factorial-recursive n)
+  (if (<= n 1)
+      1
+      (* n (factorial-recursive (- n 1)))))
+
+;; Tail-recursive implementation
+(define (factorial-tail n)
+  (define (fact-iter product counter max-count)
+    (if (> counter max-count)
+        product
+        (fact-iter (* counter product)
+                  (+ counter 1)
+                  max-count)))
+  (fact-iter 1 1 n))
+
+;; Example usage
+(define (run-examples)
+  (display "Factorial of 5 (recursive): ")
+  (display (factorial-recursive 5))
+  (newline)
+  (display "Factorial of 5 (tail-recursive): ")
+  (display (factorial-tail 5))
+  (newline))
+
+(run-examples)
+#+END_SRC
+
+** fibonacci
+
+#+BEGIN_SRC scheme :tangle src/scheme/fibonacci.scm :mkdirp yes
+;; Recursive implementation
+(define (fib-recursive n)
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        (else (+ (fib-recursive (- n 1))
+                (fib-recursive (- n 2))))))
+
+;; Tail-recursive implementation
+(define (fib-tail n)
+  (define (fib-iter a b count)
+    (if (= count 0)
+        a
+        (fib-iter b (+ a b) (- count 1))))
+  (fib-iter 0 1 n))
+
+;; Continuation-passing style
+(define (fib-cps n k)
+  (cond ((= n 0) (k 0))
+        ((= n 1) (k 1))
+        (else (fib-cps (- n 1)
+                      (lambda (v1)
+                        (fib-cps (- n 2)
+                               (lambda (v2)
+                                 (k (+ v1 v2)))))))))
+
+(define (fib n)
+  (fib-cps n (lambda (x) x)))
+
+;; Example usage
+(define (run-examples)
+  (display "Fibonacci of 10 (recursive): ")
+  (display (fib-recursive 10))
+  (newline)
+  (display "Fibonacci of 10 (tail-recursive): ")
+  (display (fib-tail 10))
+  (newline)
+  (display "Fibonacci of 10 (CPS): ")
+  (display (fib 10))
+  (newline))
+
+(run-examples)
+#+END_SRC
+
+** fizzbuzz
+
+#+BEGIN_SRC scheme :tangle src/scheme/fizzbuzz.scm :mkdirp yes
+;; Helper: display FizzBuzz for a number
+(define (fizzbuzz-number n)
+  (cond ((= (remainder n 15) 0) "FizzBuzz")
+        ((= (remainder n 3) 0) "Fizz")
+        ((= (remainder n 5) 0) "Buzz")
+        (else n)))
+
+;; Print FizzBuzz sequence
+(define (fizzbuzz n)
+  (define (iter i)
+    (when (<= i n)
+      (display (fizzbuzz-number i))
+      (newline)
+      (iter (+ i 1))))
+  (iter 1))
+
+;; Create a list of FizzBuzz values
+(define (fizzbuzz-list n)
+  (define (iter i result)
+    (if (> i n)
+        (reverse result)
+        (iter (+ i 1) (cons (fizzbuzz-number i) result))))
+  (iter 1 '()))
+
+;; Example usage
+(define (run-examples)
+  (display "FizzBuzz (1-20):\n")
+  (fizzbuzz 20)
+  (display "\nFizzBuzz as list (1-20): ")
+  (display (fizzbuzz-list 20))
+  (newline))
+
+(run-examples)
+#+END_SRC
+
+** primes
+
+#+BEGIN_SRC scheme :tangle src/scheme/primes.scm :mkdirp yes
+;; Helper function: square root
+(define (square x) (* x x))
+
+;; Check if a number is prime
+(define (prime? n)
+  (define (smallest-divisor n)
+    (find-divisor n 2))
+  (define (find-divisor n test-divisor)
+    (cond ((> (square test-divisor) n) n)
+          ((divides? test-divisor n) test-divisor)
+          (else (find-divisor n (+ test-divisor 1)))))
+  (define (divides? a b)
+    (= (remainder b a) 0))
+  (and (> n 1) (= n (smallest-divisor n))))
+
+;; Generate primes up to n
+(define (primes-up-to n)
+  (define (iter i result)
+    (cond ((> i n) (reverse result))
+          ((prime? i) (iter (+ i 1) (cons i result)))
+          (else (iter (+ i 1) result))))
+  (iter 2 '()))
+
+;; Sieve of Eratosthenes (using lists)
+(define (sieve-of-eratosthenes n)
+  (define (sieve numbers)
+    (if (null? numbers)
+        '()
+        (let ((p (car numbers)))
+          (cons p (sieve (filter
+                         (lambda (x) (not (= 0 (remainder x p))))
+                         (cdr numbers)))))))
+  (sieve (range 2 n)))
+
+;; Helper: generate a range of numbers
+(define (range start end)
+  (if (> start end)
+      '()
+      (cons start (range (+ start 1) end))))
+
+;; Example usage
+(define (run-examples)
+  (display "Primes up to 20: ")
+  (display (primes-up-to 20))
+  (newline)
+  (display "Primes up to 20 (sieve): ")
+  (display (sieve-of-eratosthenes 21))
+  (newline)
+  (display "Is 17 prime? ")
+  (display (prime? 17))
+  (newline)
+  (display "Is 15 prime? ")
+  (display (prime? 15))
+  (newline))
+
+(run-examples)
+#+END_SRC
+
+** quantum-simulator
+
+#+BEGIN_SRC scheme :tangle src/scheme/quantum-simulator.scm :mkdirp yes
+;; Quantum Computing Simulator in Scheme
+;; Implementation-agnostic version
+;; Designed to work with various Scheme implementations
+
+;;; Complex number representation and operations
+;; We use pairs for complex numbers: (real-part . imag-part)
+;; These can be replaced with implementation-specific versions via wrappers
+
+;; Basic complex number constructors and accessors
+(define (make-complex real imag)
+  (cons real imag))
+
+(define (real-part z)
+  (car z))
+
+(define (imag-part z)
+  (cdr z))
+
+;; Complex arithmetic operations
+(define (complex-add z1 z2)
+  (make-complex
+    (+ (real-part z1) (real-part z2))
+    (+ (imag-part z1) (imag-part z2))))
+
+(define (complex-multiply z1 z2)
+  (make-complex
+    (- (* (real-part z1) (real-part z2))
+       (* (imag-part z1) (imag-part z2)))
+    (+ (* (real-part z1) (imag-part z2))
+       (* (imag-part z1) (real-part z2)))))
+
+(define (complex-abs-squared z)
+  (+ (* (real-part z) (real-part z))
+     (* (imag-part z) (imag-part z))))
+
+(define (complex-conjugate z)
+  (make-complex (real-part z) (- (imag-part z))))
+
+;;; Quantum state representations
+;; Represent |0⟩ as [1, 0] and |1⟩ as [0, 1]
+(define qubit-0
+  (list (make-complex 1 0) (make-complex 0 0)))
+
+(define qubit-1
+  (list (make-complex 0 0) (make-complex 1 0)))
+
+;; Create a new qubit in state |0⟩
+(define (new-qubit)
+  (list (make-complex 1 0) (make-complex 0 0)))
+
+;;; Quantum gates as matrices
+
+;; X (NOT) gate: [[0, 1], [1, 0]]
+(define (apply-x qubit)
+  (list (list-ref qubit 1) (list-ref qubit 0)))
+
+;; H (Hadamard) gate: 1/√2 * [[1, 1], [1, -1]]
+(define (apply-h qubit)
+  (let ((inv-sqrt2 (make-complex (/ 1 (sqrt 2)) 0)))
+    (list (complex-add (complex-multiply inv-sqrt2 (list-ref qubit 0))
+                       (complex-multiply inv-sqrt2 (list-ref qubit 1)))
+          (complex-add (complex-multiply inv-sqrt2 (list-ref qubit 0))
+                       (complex-multiply 
+                         (make-complex (- (/ 1 (sqrt 2))) 0) 
+                         (list-ref qubit 1))))))
+
+;; Z gate: [[1, 0], [0, -1]]
+(define (apply-z qubit)
+  (list (list-ref qubit 0)
+        (complex-multiply (make-complex -1 0) (list-ref qubit 1))))
+
+;; Random number generator - must be provided by a wrapper
+;; Should return a real number between 0 and 1
+(define (random-uniform)
+  ;; Placeholder - replace with implementation-specific version
+  0.5)
+
+;; Measure a qubit in the standard basis
+;; Returns 0 or 1 and collapses the qubit
+;; This is a destructive operation that modifies the qubit
+(define (measure-qubit! qubit)
+  (let ((prob-0 (complex-abs-squared (list-ref qubit 0))))
+    (if (< (random-uniform) prob-0)
+        (begin
+          ;; Collapse to |0⟩
+          (set-car! qubit (make-complex 1 0))
+          (set-car! (cdr qubit) (make-complex 0 0))
+          0)
+        (begin
+          ;; Collapse to |1⟩
+          (set-car! qubit (make-complex 0 0))
+          (set-car! (cdr qubit) (make-complex 1 0))
+          1))))
+
+;; Non-destructive version of measurement
+;; Returns only the measurement outcome without modifying the qubit
+(define (measure-qubit-probability qubit)
+  (complex-abs-squared (list-ref qubit 0)))
+
+;; Function to get string representation of a qubit for display
+(define (qubit->string qubit)
+  (let ((alpha (list-ref qubit 0))
+        (beta (list-ref qubit 1)))
+    (string-append
+      "(" (number->string (real-part alpha))
+      " + " (number->string (imag-part alpha)) "i)|0⟩ + ("
+      (number->string (real-part beta))
+      " + " (number->string (imag-part beta)) "i)|1⟩")))
+
+;; Helper to run multiple measurements and get statistics
+;; This is a non-destructive operation that preserves the qubit state
+(define (measure-many qubit n)
+  (let loop ((i 0) (zeros 0))
+    (if (>= i n)
+        (/ zeros n)
+        (let ((q-copy (list (car qubit) (cadr qubit))))
+          (let ((result (measure-qubit! q-copy)))
+            (loop (+ i 1) (if (= result 0) (+ zeros 1) zeros)))))))
+
+;;; Example quantum algorithms
+
+;; Quantum coin flip using Hadamard gate
+(define (demonstrate-coin-flip)
+  (let ((q (new-qubit)))
+    (display "Initial state: ")
+    (display (qubit->string q))
+    (newline)
+    
+    (display "Applying H gate (creating superposition): ")
+    (let ((q2 (apply-h q)))
+      (display (qubit->string q2))
+      (newline)
+      
+      (display "Probability of |0⟩: ")
+      (display (measure-qubit-probability q2))
+      (newline)
+      
+      (display "Measuring the qubit: ")
+      (let ((result (measure-qubit! q2)))
+        (display "Result: ")
+        (display result)
+        (newline)
+        
+        (display "State after measurement: ")
+        (display (qubit->string q2))
+        (newline)
+        
+        (display "Theoretical probability of measuring |0⟩ over many trials: 0.5")
+        (newline)
+        
+        (display "Simulated probability of |0⟩ over 1000 measurements: ")
+        (display (measure-many (apply-h (new-qubit)) 1000))
+        (newline)))))
+
+;; Bell state (entanglement) conceptual demonstration
+(define (demonstrate-bell-state)
+  (display "\nCreating Bell State (|00⟩ + |11⟩)/√2:")
+  (newline)
+  (display "1. Start with two qubits in |0⟩:")
+  (newline)
+  (display "   |q1⟩ = |0⟩, |q2⟩ = |0⟩")
+  (newline)
+  (display "2. Apply H gate to first qubit:")
+  (newline)
+  (display "   |q1⟩ = (|0⟩ + |1⟩)/√2, |q2⟩ = |0⟩")
+  (newline)
+  (display "3. Apply CNOT gate (conceptually):")
+  (newline)
+  (display "   Final state = (|00⟩ + |11⟩)/√2")
+  (newline)
+  (display "This is a maximally entangled state!")
+  (newline))
+
+;; Grover's search algorithm conceptual demonstration
+(define (demonstrate-grovers-search)
+  (display "\nGrover's Search Algorithm (conceptual, 2 qubits):")
+  (newline)
+  (display "1. Start with |00⟩")
+  (newline)
+  (display "2. Apply H to both qubits: (|00⟩ + |01⟩ + |10⟩ + |11⟩)/2")
+  (newline)
+  (display "3. Oracle marks solution |10⟩")
+  (newline)
+  (display "4. Amplitude amplification increases probability of |10⟩")
+  (newline)
+  (display "5. Measure and get solution |10⟩ with high probability")
+  (newline))
+
+;; Main entry point
+(define (quantum-simulator-demo)
+  (display "Quantum Computing Simulator in Scheme")
+  (newline)
+  (display "========================================")
+  (newline)
+  (demonstrate-coin-flip)
+  (demonstrate-bell-state)
+  (demonstrate-grovers-search))
+
+;; Run the demonstration if this file is executed directly
+(quantum-simulator-demo)#+END_SRC
+
+** quicksort
+
+#+BEGIN_SRC scheme :tangle src/scheme/quicksort.scm :mkdirp yes
+;; Quicksort implementation
+(define (quicksort lst)
+  (if (or (null? lst) (null? (cdr lst)))
+      lst
+      (let ((pivot (car lst))
+            (rest (cdr lst)))
+        (append (quicksort (filter (lambda (x) (< x pivot)) rest))
+                (list pivot)
+                (quicksort (filter (lambda (x) (>= x pivot)) rest))))))
+
+;; Helper: filter a list
+(define (filter pred lst)
+  (cond ((null? lst) '())
+        ((pred (car lst))
+         (cons (car lst) (filter pred (cdr lst))))
+        (else (filter pred (cdr lst)))))
+
+;; Example usage
+(define (run-examples)
+  (let ((numbers '(3 1 4 1 5 9 2 6 5 3 5)))
+    (display "Original list: ")
+    (display numbers)
+    (newline)
+    (display "Sorted list: ")
+    (display (quicksort numbers))
+    (newline)))
+
+(run-examples)
+#+END_SRC
+
+** stack-machine
+
+#+BEGIN_SRC scheme :tangle src/scheme/stack-machine.scm :mkdirp yes
+;; Stack-Based Computer Simulator
+;; Implementation-agnostic Scheme code for a Forth-like stack machine
+
+;;; Stack Operations
+;; Create a new stack
+(define (make-stack)
+  '())
+
+;; Push a value onto the stack
+(define (stack-push stack value)
+  (cons value stack))
+
+;; Pop a value from the stack
+(define (stack-pop stack)
+  (if (null? stack)
+      (error "Stack underflow")
+      (values (car stack) (cdr stack))))
+
+;; Peek at the top value without popping
+(define (stack-peek stack)
+  (if (null? stack)
+      (error "Empty stack")
+      (car stack)))
+
+;; Check if stack is empty
+(define (stack-empty? stack)
+  (null? stack))
+
+;; Stack size
+(define (stack-size stack)
+  (length stack))
+
+;;; Memory
+;; Create a new memory with specified size
+(define (make-memory size)
+  (make-vector size 0))
+
+;; Read from memory
+(define (memory-read memory address)
+  (if (and (>= address 0) (< address (vector-length memory)))
+      (vector-ref memory address)
+      (error "Memory address out of bounds:" address)))
+
+;; Write to memory
+(define (memory-write! memory address value)
+  (if (and (>= address 0) (< address (vector-length memory)))
+      (vector-set! memory address value)
+      (error "Memory address out of bounds:" address)))
+
+;;; Instruction Set
+;; Define operation codes
+(define OP-PUSH 0)      ; Push a value onto the stack
+(define OP-POP 1)       ; Pop a value from the stack
+(define OP-ADD 2)       ; Add top two values
+(define OP-SUB 3)       ; Subtract
+(define OP-MUL 4)       ; Multiply
+(define OP-DIV 5)       ; Divide
+(define OP-MOD 6)       ; Modulo
+(define OP-AND 7)       ; Bitwise AND
+(define OP-OR 8)        ; Bitwise OR
+(define OP-XOR 9)       ; Bitwise XOR
+(define OP-NOT 10)      ; Bitwise NOT
+(define OP-EQ 11)       ; Equal comparison
+(define OP-LT 12)       ; Less than
+(define OP-GT 13)       ; Greater than
+(define OP-DUP 14)      ; Duplicate top value
+(define OP-SWAP 15)     ; Swap top two values
+(define OP-OVER 16)     ; Copy second value to top
+(define OP-DROP 17)     ; Discard top value
+(define OP-STORE 18)    ; Store value in memory
+(define OP-LOAD 19)     ; Load value from memory
+(define OP-JMP 20)      ; Unconditional jump
+(define OP-JZ 21)       ; Jump if zero
+(define OP-JNZ 22)      ; Jump if not zero
+(define OP-CALL 23)     ; Call subroutine
+(define OP-RET 24)      ; Return from subroutine
+(define OP-HALT 25)     ; Halt execution
+
+;;; Virtual Machine
+;; Create a new stack machine
+(define (make-stack-machine memory-size)
+  (let ((data-stack (make-stack))
+        (return-stack (make-stack))
+        (memory (make-memory memory-size))
+        (ip 0)          ; Instruction pointer
+        (running #t))   ; Execution state
+    
+    ;; Execute one instruction
+    (define (execute-instruction opcode operand)
+      (case opcode
+        ((0) ; PUSH
+         (set! data-stack (stack-push data-stack operand)))
+        
+        ((1) ; POP
+         (let-values (((value new-stack) (stack-pop data-stack)))
+           (set! data-stack new-stack)))
+        
+        ((2) ; ADD
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (+ a b))))))
+        
+        ((3) ; SUB
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (- a b))))))
+        
+        ((4) ; MUL
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (* a b))))))
+        
+        ((5) ; DIV
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (quotient a b))))))
+        
+        ((6) ; MOD
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (remainder a b))))))
+        
+        ((7) ; AND
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (logand a b))))))
+        
+        ((8) ; OR
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (logior a b))))))
+        
+        ((9) ; XOR
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (logxor a b))))))
+        
+        ((10) ; NOT
+         (let-values (((a new-stack) (stack-pop data-stack)))
+           (set! data-stack (stack-push new-stack (lognot a)))))
+        
+        ((11) ; EQ
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (if (= a b) 1 0))))))
+        
+        ((12) ; LT
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (if (< a b) 1 0))))))
+        
+        ((13) ; GT
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push new-stack2 (if (> a b) 1 0))))))
+        
+        ((14) ; DUP
+         (let-values (((value new-stack) (stack-pop data-stack)))
+           (set! data-stack (stack-push (stack-push new-stack value) value))))
+        
+        ((15) ; SWAP
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push (stack-push new-stack2 b) a)))))
+        
+        ((16) ; OVER
+         (let-values (((b new-stack1) (stack-pop data-stack)))
+           (let-values (((a new-stack2) (stack-pop new-stack1)))
+             (set! data-stack (stack-push (stack-push (stack-push new-stack2 a) b) a)))))
+        
+        ((17) ; DROP
+         (let-values (((value new-stack) (stack-pop data-stack)))
+           (set! data-stack new-stack)))
+        
+        ((18) ; STORE
+         (let-values (((address new-stack1) (stack-pop data-stack)))
+           (let-values (((value new-stack2) (stack-pop new-stack1)))
+             (memory-write! memory address value)
+             (set! data-stack new-stack2))))
+        
+        ((19) ; LOAD
+         (let-values (((address new-stack) (stack-pop data-stack)))
+           (let ((value (memory-read memory address)))
+             (set! data-stack (stack-push new-stack value)))))
+        
+        ((20) ; JMP
+         (set! ip operand))
+        
+        ((21) ; JZ
+         (let-values (((value new-stack) (stack-pop data-stack)))
+           (set! data-stack new-stack)
+           (when (= value 0)
+             (set! ip operand))))
+        
+        ((22) ; JNZ
+         (let-values (((value new-stack) (stack-pop data-stack)))
+           (set! data-stack new-stack)
+           (when (not (= value 0))
+             (set! ip operand))))
+        
+        ((23) ; CALL
+         (set! return-stack (stack-push return-stack ip))
+         (set! ip operand))
+        
+        ((24) ; RET
+         (let-values (((return-addr new-stack) (stack-pop return-stack)))
+           (set! return-stack new-stack)
+           (set! ip return-addr)))
+        
+        ((25) ; HALT
+         (set! running #f))
+        
+        (else
+         (error "Unknown opcode:" opcode))))
+    
+    ;; Run one cycle of the machine
+    (define (run-cycle)
+      (if running
+          (let ((opcode (memory-read memory ip))
+                (operand (memory-read memory (+ ip 1))))
+            (set! ip (+ ip 2))  ; Move to next instruction
+            (execute-instruction opcode operand)
+            #t)
+          #f))
+    
+    ;; Run until halted
+    (define (run)
+      (let loop ()
+        (when (run-cycle)
+          (loop))))
+    
+    ;; Load program into memory
+    (define (load-program program)
+      (let loop ((addr 0)
+                 (instructions program))
+        (when (and (< addr (vector-length memory)) 
+                   (not (null? instructions)))
+          (memory-write! memory addr (car instructions))
+          (loop (+ addr 1) (cdr instructions))))
+      (set! ip 0)
+      (set! running #t))
+    
+    ;; Display machine state
+    (define (display-state)
+      (display "Instruction Pointer: ")
+      (display ip)
+      (newline)
+      (display "Data Stack: ")
+      (display data-stack)
+      (newline)
+      (display "Return Stack: ")
+      (display return-stack)
+      (newline))
+    
+    ;; Return interface functions
+    (lambda (cmd . args)
+      (case cmd
+        ((load) (apply load-program args))
+        ((step) (run-cycle))
+        ((run) (run))
+        ((stack) data-stack)
+        ((memory) (if (null? args) 
+                      memory 
+                      (memory-read memory (car args))))
+        ((write-memory) (memory-write! memory (car args) (cadr args)))
+        ((ip) ip)
+        ((reset) (set! ip 0) (set! data-stack '()) (set! return-stack '()))
+        ((status) (display-state))
+        (else (error "Unknown command:" cmd))))))
+
+;;; Example Programs
+
+;; Calculate factorial of 5
+(define factorial-program
+  (list
+   ;; Initialize
+   OP-PUSH 5    ; Push initial value (5)
+   OP-PUSH 1    ; Push accumulator (1)
+   
+   ;; Main loop (starts at address 4)
+   OP-SWAP      ; Swap n and accumulator
+   OP-OVER      ; Duplicate n
+   OP-JZ 16     ; Jump to end if n is 0
+   OP-SWAP      ; Swap back
+   OP-OVER      ; Duplicate accumulator
+   OP-MUL 0     ; Multiply n * accumulator
+   OP-SWAP      ; Swap result and n
+   OP-PUSH 1    ; Push 1
+   OP-SUB 0     ; Decrement n
+   OP-JMP 4     ; Jump back to start of loop
+   
+   ;; End (address 16)
+   OP-DROP 0    ; Drop n (should be 0 now)
+   OP-HALT 0    ; Halt
+  ))
+
+;; Fibonacci sequence: Calculate the 10th Fibonacci number
+(define fibonacci-program
+  (list
+   ;; Initialize
+   OP-PUSH 10   ; Push n (10th number)
+   OP-PUSH 0    ; Push first Fibonacci number
+   OP-PUSH 1    ; Push second Fibonacci number
+   
+   ;; Main loop (starts at address 6)
+   OP-OVER      ; Duplicate second number
+   OP-OVER      ; Duplicate first number
+   OP-ADD 0     ; Add first and second
+   OP-SWAP      ; Swap first and sum (new second)
+   OP-DROP 0    ; Drop old first
+   
+   ;; Decrement counter
+   OP-SWAP      ; Swap n and second
+   OP-PUSH 1    ; Push 1
+   OP-SUB 0     ; Decrement n
+   OP-DUP 0     ; Duplicate n
+   OP-PUSH 1    ; Push 1
+   OP-EQ 0      ; Compare n to 1
+   OP-JZ 6      ; If n != 1, loop again
+   
+   ;; End (address 20)
+   OP-DROP 0    ; Drop n
+   OP-SWAP      ; Swap to get result on top
+   OP-HALT 0    ; Halt
+  ))
+
+;; Example usage
+(define (factorial-demo)
+  (let ((machine (make-stack-machine 100)))
+    
+    (machine 'load factorial-program)
+    (display "Initial state:\n")
+    (machine 'status)
+    
+    (machine 'run)
+    
+    (display "\nFinal state:\n")
+    (machine 'status)
+    
+    (display "\nResult: ")
+    (display (car (machine 'stack)))
+    (newline)))
+
+(define (fibonacci-demo)
+  (let ((machine (make-stack-machine 100)))
+    
+    (machine 'load fibonacci-program)
+    (display "Initial state:\n")
+    (machine 'status)
+    
+    (machine 'run)
+    
+    (display "\nFinal state:\n")
+    (machine 'status)
+    
+    (display "\nResult: ")
+    (display (car (machine 'stack)))
+    (newline)))
+
+;; Run demos if this file is executed directly
+(display "Stack-Based Computer Simulator Demos")
+(newline)
+(display "================================")
+(newline)
+
+(display "\nFactorial of 5:\n")
+(factorial-demo)
+
+(display "\nFibonacci (10th number):\n")
+(fibonacci-demo)#+END_SRC
+

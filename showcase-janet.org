@@ -1,0 +1,192 @@
+#+TITLE: janet Examples
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: 2025-06-09
+#+PROPERTY: header-args :padline yes :comments both
+#+OPTIONS: toc:3 num:t
+
+* janet Examples
+
+** factorial
+
+#+BEGIN_SRC janet :tangle src/janet/factorial.janet :mkdirp yes
+# Recursive implementation
+(defn factorial-recursive [n]
+  (if (<= n 1)
+    1
+    (* n (factorial-recursive (- n 1)))))
+
+# Tail-recursive implementation
+(defn factorial-tail [n &opt acc]
+  (default acc 1)
+  (if (<= n 1)
+    acc
+    (factorial-tail (- n 1) (* n acc))))
+
+# Iterative implementation
+(defn factorial-iterative [n]
+  (var result 1)
+  (for i 1 (+ n 1)
+    (set result (* result i)))
+  result)
+
+# Example usage
+(defn run-examples []
+  (printf "Factorial of 5 (recursive): %d" (factorial-recursive 5))
+  (printf "Factorial of 5 (tail-recursive): %d" (factorial-tail 5))
+  (printf "Factorial of 5 (iterative): %d" (factorial-iterative 5)))
+
+(run-examples)
+#+END_SRC
+
+** fibonacci
+
+#+BEGIN_SRC janet :tangle src/janet/fibonacci.janet :mkdirp yes
+# Recursive implementation
+(defn fib-recursive [n]
+  (cond
+    (= n 0) 0
+    (= n 1) 1
+    (+ (fib-recursive (- n 1))
+       (fib-recursive (- n 2)))))
+
+# Memoized implementation
+(defn fib-memo [n]
+  (def cache @{})
+  (defn fib [n]
+    (if (get cache n)
+      (get cache n)
+      (let [result (if (< n 2)
+                     n
+                     (+ (fib (- n 1))
+                        (fib (- n 2))))]
+        (put cache n result)
+        result)))
+  (fib n))
+
+# Tail-recursive implementation
+(defn fib-tail [n]
+  (defn fib-iter [a b count]
+    (if (= count 0)
+        a
+        (fib-iter b (+ a b) (- count 1))))
+  (fib-iter 0 1 n))
+
+# Example usage
+(defn run-examples []
+  (printf "Fibonacci of 10 (recursive): %d" (fib-recursive 10))
+  (printf "Fibonacci of 10 (memoized): %d" (fib-memo 10))
+  (printf "Fibonacci of 10 (tail-recursive): %d" (fib-tail 10)))
+
+(run-examples)
+#+END_SRC
+
+** fizzbuzz
+
+#+BEGIN_SRC janet :tangle src/janet/fizzbuzz.janet :mkdirp yes
+# FizzBuzz implementation
+(defn fizzbuzz [n]
+  (for i 1 (+ n 1)
+    (print (cond
+             (= (% i 15) 0) "FizzBuzz"
+             (= (% i 3) 0) "Fizz"
+             (= (% i 5) 0) "Buzz"
+             i))))
+
+# FizzBuzz returning an array
+(defn fizzbuzz-array [n]
+  (def result @[])
+  (for i 1 (+ n 1)
+    (array/push result 
+                (cond
+                  (= (% i 15) 0) "FizzBuzz"
+                  (= (% i 3) 0) "Fizz"
+                  (= (% i 5) 0) "Buzz"
+                  i)))
+  result)
+
+# Example usage
+(defn run-examples []
+  (print "FizzBuzz (1-20):")
+  (fizzbuzz 20)
+  (print "\nFizzBuzz as array (1-20):")
+  (printf "%j" (fizzbuzz-array 20)))
+
+(run-examples)
+#+END_SRC
+
+** primes
+
+#+BEGIN_SRC janet :tangle src/janet/primes.janet :mkdirp yes
+# Check if a number is prime
+(defn prime? [n]
+  (when (> n 1)
+    (var is-prime true)
+    (def limit (math/sqrt n))
+    (for i 2 (+ (math/floor limit) 1)
+      (when (= (% n i) 0)
+        (set is-prime false)
+        (break)))
+    is-prime))
+
+# Generate primes up to n
+(defn primes-up-to [n]
+  (def result @[])
+  (for i 2 (+ n 1)
+    (when (prime? i)
+      (array/push result i)))
+  result)
+
+# Sieve of Eratosthenes
+(defn sieve-of-eratosthenes [n]
+  (def sieve (array/new-filled (+ n 1) true))
+  # 0 and 1 are not prime
+  (put sieve 0 false)
+  (put sieve 1 false)
+  
+  (def limit (math/sqrt n))
+  (for i 2 (+ (math/floor limit) 1)
+    (when (get sieve i)
+      (var j (* i i))
+      (while (<= j n)
+        (put sieve j false)
+        (set j (+ j i)))))
+  
+  (def primes @[])
+  (for i 2 (+ n 1)
+    (when (get sieve i)
+      (array/push primes i)))
+  
+  primes)
+
+# Example usage
+(defn run-examples []
+  (printf "Primes up to 20: %j" (primes-up-to 20))
+  (printf "Primes up to 20 (sieve): %j" (sieve-of-eratosthenes 20))
+  (printf "Is 17 prime? %s" (if (prime? 17) "Yes" "No"))
+  (printf "Is 15 prime? %s" (if (prime? 15) "Yes" "No")))
+
+(run-examples)
+#+END_SRC
+
+** quicksort
+
+#+BEGIN_SRC janet :tangle src/janet/quicksort.janet :mkdirp yes
+# Quicksort implementation
+(defn quicksort [arr]
+  (if (or (= (length arr) 0) (= (length arr) 1))
+    arr
+    (let [pivot (first arr)
+          rest (array/slice arr 1)
+          lesser (filter |(< $ pivot) rest)
+          greater (filter |(>= $ pivot) rest)]
+      (array/concat (quicksort lesser) @[pivot] (quicksort greater)))))
+
+# Example usage
+(defn run-examples []
+  (def numbers @[3 1 4 1 5 9 2 6 5 3 5])
+  (printf "Original array: %j" numbers)
+  (printf "Sorted array: %j" (quicksort numbers)))
+
+(run-examples)
+#+END_SRC
+

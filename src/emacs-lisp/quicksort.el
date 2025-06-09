@@ -1,3 +1,7 @@
+;; quicksort
+
+
+;; [[file:../../showcase-emacs-lisp.org::*quicksort][quicksort:1]]
 ;;; quicksort.el --- Quicksort implementation in Emacs Lisp
 
 ;;; Commentary:
@@ -54,3 +58,4 @@
 
 (provide 'quicksort)
 ;;; quicksort.el ends here
+;; quicksort:1 ends here

@@ -1,3 +1,7 @@
+;; factorial
+
+
+;; [[file:../../showcase-clojure.org::*factorial][factorial:1]]
 (ns clojure.factorial
   (:gen-class))
 
@@ -27,3 +31,4 @@
 
 (defn -main []
   (run-examples))
+;; factorial:1 ends here

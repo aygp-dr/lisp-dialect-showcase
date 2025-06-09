@@ -1,0 +1,209 @@
+#+TITLE: fennel Examples
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: 2025-06-09
+#+PROPERTY: header-args :padline yes :comments both
+#+OPTIONS: toc:3 num:t
+
+* fennel Examples
+
+** factorial
+
+#+BEGIN_SRC fennel :tangle src/fennel/factorial.fnl :mkdirp yes
+;; Recursive implementation
+(fn factorial-recursive [n]
+  (if (<= n 1)
+      1
+      (* n (factorial-recursive (- n 1)))))
+
+;; Tail-recursive implementation
+(fn factorial-tail [n acc]
+  (let [acc (or acc 1)]
+    (if (<= n 1)
+        acc
+        (factorial-tail (- n 1) (* n acc)))))
+
+;; Iterative implementation
+(fn factorial-iterative [n]
+  (var result 1)
+  (for [i 1 n]
+    (set result (* result i)))
+  result)
+
+;; Example usage
+(fn run-examples []
+  (print (.. "Factorial of 5 (recursive): " (factorial-recursive 5)))
+  (print (.. "Factorial of 5 (tail-recursive): " (factorial-tail 5)))
+  (print (.. "Factorial of 5 (iterative): " (factorial-iterative 5))))
+
+(run-examples)
+#+END_SRC
+
+** fibonacci
+
+#+BEGIN_SRC fennel :tangle src/fennel/fibonacci.fnl :mkdirp yes
+;; Recursive implementation
+(fn fib-recursive [n]
+  (if (= n 0) 0
+      (= n 1) 1
+      (+ (fib-recursive (- n 1))
+         (fib-recursive (- n 2)))))
+
+;; Tail-recursive implementation
+(fn fib-tail [n]
+  (var [a b] [0 1])
+  (for [_ 1 n]
+    (set [a b] [b (+ a b)]))
+  a)
+
+;; Memoized implementation
+(local memo {})
+
+(fn fib-memo [n]
+  (if (. memo n)
+      (. memo n)
+      (let [result (if (< n 2)
+                       n
+                       (+ (fib-memo (- n 1))
+                          (fib-memo (- n 2))))]
+        (tset memo n result)
+        result)))
+
+;; Example usage
+(fn run-examples []
+  (print (.. "Fibonacci of 10 (recursive): " (fib-recursive 10)))
+  (print (.. "Fibonacci of 10 (tail-recursive): " (fib-tail 10)))
+  (print (.. "Fibonacci of 10 (memoized): " (fib-memo 10))))
+
+(run-examples)
+#+END_SRC
+
+** fizzbuzz
+
+#+BEGIN_SRC fennel :tangle src/fennel/fizzbuzz.fnl :mkdirp yes
+;; FizzBuzz implementation
+(fn fizzbuzz [n]
+  (for [i 1 n]
+    (print (if (= (% i 15) 0) "FizzBuzz"
+               (= (% i 3) 0) "Fizz"
+               (= (% i 5) 0) "Buzz"
+               i))))
+
+;; FizzBuzz returning a table
+(fn fizzbuzz-table [n]
+  (local result [])
+  (for [i 1 n]
+    (table.insert result
+                 (if (= (% i 15) 0) "FizzBuzz"
+                     (= (% i 3) 0) "Fizz"
+                     (= (% i 5) 0) "Buzz"
+                     i)))
+  result)
+
+;; Example usage
+(fn run-examples []
+  (print "FizzBuzz (1-20):")
+  (fizzbuzz 20)
+  (print "\nFizzBuzz as table (1-20):")
+  (local result (fizzbuzz-table 20))
+  (var output "")
+  (each [i v (ipairs result)]
+    (set output (.. output v " ")))
+  (print output))
+
+(run-examples)
+#+END_SRC
+
+** primes
+
+#+BEGIN_SRC fennel :tangle src/fennel/primes.fnl :mkdirp yes
+;; Check if a number is prime
+(fn is-prime? [n]
+  (when (> n 1)
+    (var prime? true)
+    (let [limit (math.floor (math.sqrt n))]
+      (for [i 2 limit 1]
+        (when (= (% n i) 0)
+          (set prime? false)
+          (lua "break")))
+      prime?)))
+
+;; Generate primes up to n
+(fn primes-up-to [n]
+  (local result [])
+  (for [i 2 n]
+    (when (is-prime? i)
+      (table.insert result i)))
+  result)
+
+;; Sieve of Eratosthenes
+(fn sieve-of-eratosthenes [n]
+  (local sieve [])
+  ;; Initialize sieve
+  (for [i 0 n]
+    (tset sieve i true))
+  
+  ;; 0 and 1 are not prime
+  (tset sieve 0 false)
+  (tset sieve 1 false)
+  
+  ;; Mark multiples as non-prime
+  (let [limit (math.floor (math.sqrt n))]
+    (for [i 2 limit]
+      (when (. sieve i)
+        (var j (* i i))
+        (while (<= j n)
+          (tset sieve j false)
+          (set j (+ j i))))))
+  
+  ;; Collect primes
+  (local primes [])
+  (for [i 2 n]
+    (when (. sieve i)
+      (table.insert primes i)))
+  
+  primes)
+
+;; Example usage
+(fn run-examples []
+  (print "Primes up to 20:")
+  (print (table.concat (primes-up-to 20) ", "))
+  (print "\nPrimes up to 20 (sieve):")
+  (print (table.concat (sieve-of-eratosthenes 20) ", "))
+  (print (.. "Is 17 prime? " (if (is-prime? 17) "Yes" "No")))
+  (print (.. "Is 15 prime? " (if (is-prime? 15) "Yes" "No"))))
+
+(run-examples)
+#+END_SRC
+
+** quicksort
+
+#+BEGIN_SRC fennel :tangle src/fennel/quicksort.fnl :mkdirp yes
+;; Quicksort implementation
+(fn quicksort [arr]
+  (if (or (= (length arr) 0) (= (length arr) 1))
+      arr
+      (let [pivot (. arr 1)
+            lesser []
+            greater []]
+        (for [i 2 (length arr)]
+          (let [value (. arr i)]
+            (if (< value pivot)
+                (table.insert lesser value)
+                (table.insert greater value))))
+        (let [result (quicksort lesser)]
+          (table.insert result pivot)
+          (each [_ v (ipairs (quicksort greater))]
+            (table.insert result v))
+          result))))
+
+;; Example usage
+(fn run-examples []
+  (local numbers [3 1 4 1 5 9 2 6 5 3 5])
+  (print "Original list:")
+  (print (table.concat numbers ", "))
+  (print "\nSorted list:")
+  (print (table.concat (quicksort numbers) ", ")))
+
+(run-examples)
+#+END_SRC
+

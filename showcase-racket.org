@@ -1,0 +1,226 @@
+#+TITLE: racket Examples
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: 2025-06-09
+#+PROPERTY: header-args :padline yes :comments both
+#+OPTIONS: toc:3 num:t
+
+* racket Examples
+
+** factorial
+
+#+BEGIN_SRC racket :tangle src/racket/factorial.rkt :mkdirp yes
+#lang racket
+
+;; Recursive implementation
+(define (factorial-recursive n)
+  (if (<= n 1)
+      1
+      (* n (factorial-recursive (- n 1)))))
+
+;; Tail-recursive implementation
+(define (factorial-tail n [acc 1])
+  (if (<= n 1)
+      acc
+      (factorial-tail (- n 1) (* n acc))))
+
+;; Implementation using fold
+(define (factorial-fold n)
+  (for/fold ([acc 1])
+            ([i (in-range 1 (add1 n))])
+    (* acc i)))
+
+;; Example usage
+(define (run-examples)
+  (displayln (format "Factorial of 5 (recursive): ~a" (factorial-recursive 5)))
+  (displayln (format "Factorial of 5 (tail): ~a" (factorial-tail 5)))
+  (displayln (format "Factorial of 5 (fold): ~a" (factorial-fold 5))))
+
+(module+ main
+  (run-examples))
+#+END_SRC
+
+** fibonacci
+
+#+BEGIN_SRC racket :tangle src/racket/fibonacci.rkt :mkdirp yes
+#lang racket
+
+;; Recursive implementation
+(define (fib-recursive n)
+  (cond [(= n 0) 0]
+        [(= n 1) 1]
+        [else (+ (fib-recursive (- n 1))
+                 (fib-recursive (- n 2)))]))
+
+;; Memoization with built-in support
+(require racket/memoize)
+
+(define fib-memo
+  (memoize
+   (λ (n)
+     (cond [(= n 0) 0]
+           [(= n 1) 1]
+           [else (+ (fib-memo (- n 1))
+                    (fib-memo (- n 2)))]))))
+
+;; Contract-based implementation
+(provide/contract
+ [fibonacci (-> exact-nonnegative-integer?
+                exact-nonnegative-integer?)])
+
+(define (fibonacci n)
+  (cond [(= n 0) 0]
+        [(= n 1) 1]
+        [else (+ (fibonacci (- n 1))
+                 (fibonacci (- n 2)))]))
+
+;; Example usage
+(define (run-examples)
+  (displayln (format "Fibonacci of 10 (recursive): ~a" (fib-recursive 10)))
+  (displayln (format "Fibonacci of 10 (memoized): ~a" (fib-memo 10)))
+  (displayln (format "Fibonacci of 10 (contract): ~a" (fibonacci 10))))
+
+(module+ main
+  (run-examples))
+#+END_SRC
+
+** fizzbuzz
+
+#+BEGIN_SRC racket :tangle src/racket/fizzbuzz.rkt :mkdirp yes
+#lang racket
+
+;; FizzBuzz using cond
+(define (fizzbuzz n)
+  (for ([i (in-range 1 (add1 n))])
+    (displayln
+     (cond
+       [(zero? (remainder i 15)) "FizzBuzz"]
+       [(zero? (remainder i 3)) "Fizz"]
+       [(zero? (remainder i 5)) "Buzz"]
+       [else i]))))
+
+;; FizzBuzz as a list using for/list
+(define (fizzbuzz-list n)
+  (for/list ([i (in-range 1 (add1 n))])
+    (cond
+      [(zero? (remainder i 15)) "FizzBuzz"]
+      [(zero? (remainder i 3)) "Fizz"]
+      [(zero? (remainder i 5)) "Buzz"]
+      [else i])))
+
+;; FizzBuzz using match
+(define (fizzbuzz-match n)
+  (for/list ([i (in-range 1 (add1 n))])
+    (match (list (zero? (remainder i 3))
+                (zero? (remainder i 5)))
+      [(list #t #t) "FizzBuzz"]
+      [(list #t #f) "Fizz"]
+      [(list #f #t) "Buzz"]
+      [_ i])))
+
+;; Example usage
+(define (run-examples)
+  (displayln "FizzBuzz (1-20):")
+  (fizzbuzz 20)
+  (displayln (format "\nFizzBuzz as list (1-20): ~a" (fizzbuzz-list 20))))
+
+(module+ main
+  (run-examples))
+#+END_SRC
+
+** primes
+
+#+BEGIN_SRC racket :tangle src/racket/primes.rkt :mkdirp yes
+#lang racket
+
+;; Check if a number is prime
+(define (prime? n)
+  (and (> n 1)
+       (let loop ([i 2])
+         (or (> (sqr i) n)
+             (and (not (zero? (remainder n i)))
+                  (loop (add1 i)))))))
+
+;; Generate primes up to n
+(define (primes-up-to n)
+  (for/list ([i (in-range 2 (add1 n))]
+             #:when (prime? i))
+    i))
+
+;; Sieve of Eratosthenes
+(define (sieve-of-eratosthenes n)
+  (define sieve (make-vector (add1 n) #t))
+  (vector-set! sieve 0 #f)
+  (vector-set! sieve 1 #f)
+  
+  (for ([i (in-range 2 (add1 (exact-floor (sqrt n))))]
+        #:when (vector-ref sieve i))
+    (for ([j (in-range (sqr i) (add1 n) i)])
+      (vector-set! sieve j #f)))
+  
+  (for/list ([i (in-range 2 (add1 n))]
+             #:when (vector-ref sieve i))
+    i))
+
+;; Example usage
+(define (run-examples)
+  (displayln (format "Primes up to 20: ~a" (primes-up-to 20)))
+  (displayln (format "Primes up to 20 (sieve): ~a" (sieve-of-eratosthenes 20)))
+  (displayln (format "Is 17 prime? ~a" (prime? 17)))
+  (displayln (format "Is 15 prime? ~a" (prime? 15))))
+
+(module+ main
+  (run-examples))
+#+END_SRC
+
+** quicksort
+
+#+BEGIN_SRC racket :tangle src/racket/quicksort.rkt :mkdirp yes
+#lang racket
+
+;; Quicksort implementation using filter
+(define (quicksort lst)
+  (if (or (empty? lst) (empty? (rest lst)))
+      lst
+      (let ([pivot (first lst)]
+            [rest (rest lst)])
+        (append
+         (quicksort (filter (λ (x) (< x pivot)) rest))
+         (list pivot)
+         (quicksort (filter (λ (x) (>= x pivot)) rest))))))
+
+;; Quicksort using Racket's pattern matching
+(define (quicksort-match lst)
+  (match lst
+    [(list) '()]
+    [(list x) (list x)]
+    [(cons pivot rest)
+     (append
+      (quicksort-match (filter (λ (x) (< x pivot)) rest))
+      (list pivot)
+      (quicksort-match (filter (λ (x) (>= x pivot)) rest)))]))
+
+;; Quicksort using for/list
+(define (quicksort-for lst)
+  (if (or (empty? lst) (empty? (rest lst)))
+      lst
+      (let ([pivot (first lst)]
+            [rest (rest lst)])
+        (append
+         (quicksort-for
+          (for/list ([x rest] #:when (< x pivot)) x))
+         (list pivot)
+         (quicksort-for
+          (for/list ([x rest] #:when (>= x pivot)) x))))))
+
+;; Example usage
+(define (run-examples)
+  (let ([numbers '(3 1 4 1 5 9 2 6 5 3 5)])
+    (displayln (format "Original list: ~a" numbers))
+    (displayln (format "Quicksort: ~a" (quicksort numbers)))
+    (displayln (format "Quicksort with match: ~a" (quicksort-match numbers)))
+    (displayln (format "Quicksort with for/list: ~a" (quicksort-for numbers)))))
+
+(module+ main
+  (run-examples))
+#+END_SRC
+

@@ -1,3 +1,7 @@
+;; quicksort
+
+
+;; [[file:../../showcase-clojure.org::*quicksort][quicksort:1]]
 (ns clojure.quicksort
   (:gen-class))
 
@@ -31,3 +35,4 @@
 
 (defn -main []
   (run-examples))
+;; quicksort:1 ends here

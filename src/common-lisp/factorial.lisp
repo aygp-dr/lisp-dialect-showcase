@@ -1,10 +1,10 @@
-;; Factorial
+;; factorial
 
 
-;; [[file:../../SETUP.org::*Factorial][Factorial:1]]
+;; [[file:../../showcase-common-lisp.org::*factorial][factorial:1]]
 (defpackage :cl-factorial
   (:use :cl)
-  (:export :factorial-recursive :factorial-iterative :factorial-tail))
+  (:export :factorial-recursive :factorial-iterative :factorial-tail :run-examples))
 
 (in-package :cl-factorial)
 
@@ -34,4 +34,4 @@
   (format t "Factorial of 5 (recursive): ~a~%" (factorial-recursive 5))
   (format t "Factorial of 5 (iterative): ~a~%" (factorial-iterative 5))
   (format t "Factorial of 5 (tail-recursive): ~a~%" (factorial-tail 5)))
-;; Factorial:1 ends here
+;; factorial:1 ends here

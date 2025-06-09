@@ -1,3 +1,7 @@
+;; fizzbuzz
+
+
+;; [[file:../../showcase-clojure.org::*fizzbuzz][fizzbuzz:1]]
 (ns clojure.fizzbuzz
   (:gen-class))
 
@@ -41,3 +45,4 @@
 
 (defn -main []
   (run-examples))
+;; fizzbuzz:1 ends here

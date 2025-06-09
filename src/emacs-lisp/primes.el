@@ -1,3 +1,7 @@
+;; primes
+
+
+;; [[file:../../showcase-emacs-lisp.org::*primes][primes:1]]
 ;;; primes.el --- Prime number functions in Emacs Lisp
 
 ;;; Commentary:
@@ -62,3 +66,4 @@
 
 (provide 'primes)
 ;;; primes.el ends here
+;; primes:1 ends here

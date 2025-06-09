@@ -1,3 +1,7 @@
+;; primes
+
+
+;; [[file:../../showcase-clojure.org::*primes][primes:1]]
 (ns clojure.primes
   (:gen-class))
 
@@ -38,3 +42,4 @@
 
 (defn -main []
   (run-examples))
+;; primes:1 ends here

@@ -1,0 +1,286 @@
+#+TITLE: emacs-lisp Examples
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: 2025-06-09
+#+PROPERTY: header-args :padline yes :comments both
+#+OPTIONS: toc:3 num:t
+
+* emacs-lisp Examples
+
+** factorial
+
+#+BEGIN_SRC emacs-lisp :tangle src/emacs-lisp/factorial.el :mkdirp yes
+;;; factorial.el --- Factorial implementations in Emacs Lisp
+
+;;; Commentary:
+;; Various implementations of factorial calculation in Emacs Lisp
+
+;;; Code:
+
+;; Recursive implementation
+(defun factorial-recursive (n)
+  "Calculate factorial of N recursively."
+  (if (<= n 1)
+      1
+    (* n (factorial-recursive (- n 1)))))
+
+;; Iterative implementation
+(defun factorial-iterative (n)
+  "Calculate factorial of N iteratively."
+  (let ((result 1))
+    (dotimes (i n result)
+      (setq result (* result (1+ i))))))
+
+;; Tail-recursive implementation
+(defun factorial-tail (n &optional (acc 1))
+  "Calculate factorial of N using tail recursion with accumulator ACC."
+  (if (<= n 1)
+      acc
+    (factorial-tail (1- n) (* acc n))))
+
+;; Example usage
+(defun run-factorial-examples ()
+  "Run examples of various factorial implementations."
+  (message "Factorial of 5 (recursive): %d" (factorial-recursive 5))
+  (message "Factorial of 5 (iterative): %d" (factorial-iterative 5))
+  (message "Factorial of 5 (tail-recursive): %d" (factorial-tail 5)))
+
+(provide 'factorial)
+;;; factorial.el ends here
+#+END_SRC
+
+** fibonacci
+
+#+BEGIN_SRC emacs-lisp :tangle src/emacs-lisp/fibonacci.el :mkdirp yes
+;;; fibonacci.el --- Fibonacci implementations in Emacs Lisp
+
+;;; Commentary:
+;; Various implementations of the Fibonacci sequence in Emacs Lisp
+
+;;; Code:
+
+;; Recursive implementation
+(defun fib-recursive (n)
+  "Calculate the Nth Fibonacci number recursively."
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        (t (+ (fib-recursive (- n 1))
+              (fib-recursive (- n 2))))))
+
+;; Dynamic programming implementation
+(defun fib-dp (n)
+  "Calculate the Nth Fibonacci number using dynamic programming."
+  (let ((fib-table (make-vector (1+ n) nil)))
+    (aset fib-table 0 0)
+    (when (> n 0)
+      (aset fib-table 1 1)
+      (dotimes (i (- n 1))
+        (aset fib-table (+ i 2)
+              (+ (aref fib-table (+ i 1))
+                 (aref fib-table i)))))
+    (aref fib-table n)))
+
+;; Memoization using lexical closure
+(defun fib-memo-func ()
+  "Create a memoized Fibonacci function."
+  (let ((memo (make-hash-table)))
+    (puthash 0 0 memo)
+    (puthash 1 1 memo)
+    (lambda (n)
+      (or (gethash n memo)
+          (puthash n
+                   (+ (funcall this (- n 1))
+                      (funcall this (- n 2)))
+                   memo)))))
+
+(defvar fib-memo (fib-memo-func)
+  "Memoized Fibonacci function.")
+
+;; Example usage
+(defun run-fibonacci-examples ()
+  "Run examples of various Fibonacci implementations."
+  (message "Fibonacci of 10 (recursive): %d" (fib-recursive 10))
+  (message "Fibonacci of 10 (dynamic programming): %d" (fib-dp 10))
+  (message "Fibonacci of 10 (memoized): %d" (funcall fib-memo 10)))
+
+(provide 'fibonacci)
+;;; fibonacci.el ends here
+#+END_SRC
+
+** fizzbuzz
+
+#+BEGIN_SRC emacs-lisp :tangle src/emacs-lisp/fizzbuzz.el :mkdirp yes
+;;; fizzbuzz.el --- FizzBuzz implementation in Emacs Lisp
+
+;;; Commentary:
+;; FizzBuzz implementation in Emacs Lisp
+
+;;; Code:
+
+;; FizzBuzz implementation
+(defun fizzbuzz (n)
+  "Print FizzBuzz from 1 to N."
+  (dotimes (i n)
+    (let ((num (1+ i)))
+      (message "%s"
+               (cond
+                ((zerop (mod num 15)) "FizzBuzz")
+                ((zerop (mod num 3)) "Fizz")
+                ((zerop (mod num 5)) "Buzz")
+                (t num))))))
+
+;; Function to return a list of FizzBuzz values
+(defun fizzbuzz-list (n)
+  "Return a list of FizzBuzz values from 1 to N."
+  (let ((result nil))
+    (dotimes (i n)
+      (let ((num (1+ i)))
+        (push
+         (cond
+          ((zerop (mod num 15)) "FizzBuzz")
+          ((zerop (mod num 3)) "Fizz")
+          ((zerop (mod num 5)) "Buzz")
+          (t num))
+         result)))
+    (nreverse result)))
+
+;; Example usage
+(defun run-fizzbuzz-examples ()
+  "Run examples of FizzBuzz functions."
+  (message "FizzBuzz (1-20):")
+  (fizzbuzz 20)
+  (message "\nFizzBuzz as list (1-20): %S" (fizzbuzz-list 20)))
+
+(provide 'fizzbuzz)
+;;; fizzbuzz.el ends here
+#+END_SRC
+
+** primes
+
+#+BEGIN_SRC emacs-lisp :tangle src/emacs-lisp/primes.el :mkdirp yes
+;;; primes.el --- Prime number functions in Emacs Lisp
+
+;;; Commentary:
+;; Functions for working with prime numbers in Emacs Lisp
+
+;;; Code:
+
+;; Check if a number is prime
+(defun primep (n)
+  "Check if N is a prime number."
+  (when (> n 1)
+    (let ((limit (isqrt n))
+          (is-prime t)
+          (divisor 2))
+      (while (and is-prime (<= divisor limit))
+        (when (= (mod n divisor) 0)
+          (setq is-prime nil))
+        (setq divisor (1+ divisor)))
+      is-prime)))
+
+;; Generate primes up to n
+(defun primes-up-to (n)
+  "Generate a list of primes up to N."
+  (let ((result nil))
+    (dotimes (i n)
+      (let ((num (1+ i)))
+        (when (primep num)
+          (push num result))))
+    (nreverse result)))
+
+;; Sieve of Eratosthenes
+(defun sieve-of-eratosthenes (n)
+  "Generate primes up to N using the Sieve of Eratosthenes."
+  (let ((sieve (make-bool-vector (1+ n) t)))
+    ;; 0 and 1 are not prime
+    (aset sieve 0 nil)
+    (aset sieve 1 nil)
+    ;; Mark multiples of each prime as non-prime
+    (let ((limit (isqrt n)))
+      (dotimes (i limit)
+        (let ((num (+ i 2)))
+          (when (aref sieve num)
+            (let ((j (* num num)))
+              (while (<= j n)
+                (aset sieve j nil)
+                (setq j (+ j num))))))))
+    ;; Collect the primes
+    (let ((primes nil))
+      (dotimes (i (1- n))
+        (let ((num (+ i 2)))
+          (when (aref sieve num)
+            (push num primes))))
+      (nreverse primes))))
+
+;; Example usage
+(defun run-prime-examples ()
+  "Run examples of prime number functions."
+  (message "Primes up to 20: %S" (primes-up-to 20))
+  (message "Primes up to 20 (sieve): %S" (sieve-of-eratosthenes 20))
+  (message "Is 17 prime? %s" (if (primep 17) "Yes" "No"))
+  (message "Is 15 prime? %s" (if (primep 15) "Yes" "No")))
+
+(provide 'primes)
+;;; primes.el ends here
+#+END_SRC
+
+** quicksort
+
+#+BEGIN_SRC emacs-lisp :tangle src/emacs-lisp/quicksort.el :mkdirp yes
+;;; quicksort.el --- Quicksort implementation in Emacs Lisp
+
+;;; Commentary:
+;; Quicksort implementation in Emacs Lisp
+
+;;; Code:
+
+;; Quicksort implementation for lists
+(defun quicksort-list (list)
+  "Sort LIST using quicksort algorithm."
+  (if (or (null list) (null (cdr list)))
+      list
+    (let* ((pivot (car list))
+           (rest (cdr list))
+           (lesser (cl-remove-if-not (lambda (x) (< x pivot)) rest))
+           (greater (cl-remove-if-not (lambda (x) (>= x pivot)) rest)))
+      (append (quicksort-list lesser)
+              (list pivot)
+              (quicksort-list greater)))))
+
+;; Quicksort implementation for vectors
+(defun quicksort-vector (vec &optional start end)
+  "Sort vector VEC in-place using quicksort from START to END."
+  (let ((start (or start 0))
+        (end (or end (length vec))))
+    (when (> (- end start) 1)
+      (let ((pivot-pos (partition vec start end)))
+        (quicksort-vector vec start pivot-pos)
+        (quicksort-vector vec (1+ pivot-pos) end)))
+    vec))
+
+;; Helper function for vector quicksort
+(defun partition (vec start end)
+  "Partition vector VEC from START to END and return pivot position."
+  (let* ((pivot (aref vec start))
+         (i (1+ start)))
+    (cl-loop for j from (1+ start) below end
+             when (< (aref vec j) pivot)
+             do (progn
+                  (cl-rotatef (aref vec i) (aref vec j))
+                  (setq i (1+ i))))
+    (cl-rotatef (aref vec start) (aref vec (1- i)))
+    (1- i)))
+
+;; Example usage
+(defun run-quicksort-examples ()
+  "Run examples of quicksort functions."
+  (let ((list1 '(3 1 4 1 5 9 2 6 5 3 5))
+        (vec1 [3 1 4 1 5 9 2 6 5 3 5]))
+    (message "Original list: %S" list1)
+    (message "Sorted list: %S" (quicksort-list list1))
+    (message "Original vector: %S" vec1)
+    (message "Sorted vector: %S" (quicksort-vector (copy-sequence vec1)))))
+
+(provide 'quicksort)
+;;; quicksort.el ends here
+#+END_SRC
+

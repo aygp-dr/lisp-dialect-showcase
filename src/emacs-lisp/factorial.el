@@ -1,3 +1,7 @@
+;; factorial
+
+
+;; [[file:../../showcase-emacs-lisp.org::*factorial][factorial:1]]
 ;;; factorial.el --- Factorial implementations in Emacs Lisp
 
 ;;; Commentary:
@@ -35,3 +39,4 @@
 
 (provide 'factorial)
 ;;; factorial.el ends here
+;; factorial:1 ends here

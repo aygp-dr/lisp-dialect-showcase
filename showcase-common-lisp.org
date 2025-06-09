@@ -1,0 +1,235 @@
+#+TITLE: common-lisp Examples
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: 2025-06-09
+#+PROPERTY: header-args :padline yes :comments both
+#+OPTIONS: toc:3 num:t
+
+* common-lisp Examples
+
+** factorial
+
+#+BEGIN_SRC lisp :tangle src/common-lisp/factorial.lisp :mkdirp yes
+(defpackage :cl-factorial
+  (:use :cl)
+  (:export :factorial-recursive :factorial-iterative :factorial-tail))
+
+(in-package :cl-factorial)
+
+;; Recursive implementation
+(defun factorial-recursive (n)
+  "Calculate factorial recursively."
+  (if (<= n 1)
+      1
+      (* n (factorial-recursive (- n 1)))))
+
+;; Iterative implementation
+(defun factorial-iterative (n)
+  "Calculate factorial iteratively."
+  (let ((result 1))
+    (dotimes (i n result)
+      (setf result (* result (1+ i))))))
+
+;; Tail-recursive implementation
+(defun factorial-tail (n &optional (acc 1))
+  "Calculate factorial using tail recursion."
+  (if (<= n 1)
+      acc
+      (factorial-tail (- n 1) (* acc n))))
+
+;; Example usage
+(defun run-examples ()
+  (format t "Factorial of 5 (recursive): ~a~%" (factorial-recursive 5))
+  (format t "Factorial of 5 (iterative): ~a~%" (factorial-iterative 5))
+  (format t "Factorial of 5 (tail-recursive): ~a~%" (factorial-tail 5)))
+;; Factorial:1 ends here
+#+END_SRC
+
+** fibonacci
+
+#+BEGIN_SRC lisp :tangle src/common-lisp/fibonacci.lisp :mkdirp yes
+(defpackage :cl-fibonacci
+  (:use :cl)
+  (:export :fib-recursive :fib-iterative :fib-memo))
+
+(in-package :cl-fibonacci)
+
+;; Recursive implementation
+(defun fib-recursive (n)
+  "Calculate the nth Fibonacci number recursively."
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        (t (+ (fib-recursive (- n 1))
+              (fib-recursive (- n 2))))))
+
+;; Iterative implementation
+(defun fib-iterative (n)
+  "Calculate the nth Fibonacci number iteratively."
+  (if (< n 2)
+      n
+      (let ((a 0) (b 1))
+        (dotimes (i (- n 1) b)
+          (let ((temp (+ a b)))
+            (setf a b)
+            (setf b temp))))))
+
+;; Memoization implementation
+(let ((memo (make-hash-table)))
+  (defun fib-memo (n)
+    "Calculate the nth Fibonacci number using memoization."
+    (or (gethash n memo)
+        (setf (gethash n memo)
+              (if (< n 2)
+                  n
+                  (+ (fib-memo (- n 1))
+                     (fib-memo (- n 2))))))))
+
+;; Example usage
+(defun run-examples ()
+  (format t "Fibonacci of 10 (recursive): ~a~%" (fib-recursive 10))
+  (format t "Fibonacci of 10 (iterative): ~a~%" (fib-iterative 10))
+  (format t "Fibonacci of 10 (memoized): ~a~%" (fib-memo 10)))
+;; Fibonacci:1 ends here
+#+END_SRC
+
+** fizzbuzz
+
+#+BEGIN_SRC lisp :tangle src/common-lisp/fizzbuzz.lisp :mkdirp yes
+(defpackage :cl-fizzbuzz
+  (:use :cl)
+  (:export :fizzbuzz))
+
+(in-package :cl-fizzbuzz)
+
+;; FizzBuzz implementation
+(defun fizzbuzz (n)
+  "Print FizzBuzz from 1 to n."
+  (loop for i from 1 to n
+        do (format t "~a~%"
+                  (cond ((zerop (mod i 15)) "FizzBuzz")
+                        ((zerop (mod i 3)) "Fizz")
+                        ((zerop (mod i 5)) "Buzz")
+                        (t i)))))
+
+;; Functional implementation returning a list
+(defun fizzbuzz-list (n)
+  "Return a list of FizzBuzz values from 1 to n."
+  (loop for i from 1 to n
+        collect (cond ((zerop (mod i 15)) "FizzBuzz")
+                     ((zerop (mod i 3)) "Fizz")
+                     ((zerop (mod i 5)) "Buzz")
+                     (t i))))
+
+;; Example usage
+(defun run-examples ()
+  (format t "FizzBuzz (1-20):~%")
+  (fizzbuzz 20)
+  (format t "~%FizzBuzz as list (1-20): ~a~%" (fizzbuzz-list 20)))
+;; FizzBuzz:1 ends here
+#+END_SRC
+
+** primes
+
+#+BEGIN_SRC lisp :tangle src/common-lisp/primes.lisp :mkdirp yes
+(defpackage :cl-primes
+  (:use :cl)
+  (:export :primep :sieve-of-eratosthenes :primes-up-to))
+
+(in-package :cl-primes)
+
+;; Function to check if a number is prime
+(defun primep (n)
+  "Check if n is a prime number."
+  (when (> n 1)
+    (loop for i from 2 to (isqrt n)
+          never (zerop (mod n i)))))
+
+;; Sieve of Eratosthenes implementation
+(defun sieve-of-eratosthenes (max)
+  "Generate all primes up to max using Sieve of Eratosthenes."
+  (let ((sieve (make-array (1+ max) :initial-element t)))
+    (setf (aref sieve 0) nil
+          (aref sieve 1) nil)
+    (loop for i from 2 to (isqrt max)
+          when (aref sieve i)
+          do (loop for j from (* i i) to max by i
+                   do (setf (aref sieve j) nil)))
+    (loop for i from 2 to max
+          when (aref sieve i)
+          collect i)))
+
+;; Function to generate primes up to n
+(defun primes-up-to (n)
+  "Generate a list of primes up to n."
+  (loop for i from 2 to n
+        when (primep i)
+        collect i))
+
+;; Example usage
+(defun run-examples ()
+  (format t "Primes up to 20: ~a~%" (primes-up-to 20))
+  (format t "Primes up to 20 (sieve): ~a~%" (sieve-of-eratosthenes 20))
+  (format t "Is 17 prime? ~a~%" (primep 17))
+  (format t "Is 15 prime? ~a~%" (primep 15)))
+;; Prime Number Generator:1 ends here
+#+END_SRC
+
+** quicksort
+
+#+BEGIN_SRC lisp :tangle src/common-lisp/quicksort.lisp :mkdirp yes
+;; Quicksort
+
+
+;; [[file:../../SETUP.org::*Quicksort][Quicksort:1]]
+(defpackage :cl-quicksort
+  (:use :cl)
+  (:export :quicksort :quicksort-functional))
+
+(in-package :cl-quicksort)
+
+;; Functional implementation of quicksort
+(defun quicksort-functional (list)
+  "Sort a list using functional quicksort."
+  (if (or (null list) (null (cdr list)))
+      list
+      (let* ((pivot (car list))
+             (rest (cdr list))
+             (lesser (remove-if-not (lambda (x) (< x pivot)) rest))
+             (greater (remove-if-not (lambda (x) (>= x pivot)) rest)))
+        (append (quicksort-functional lesser)
+                (list pivot)
+                (quicksort-functional greater)))))
+
+;; Destructive in-place quicksort
+(defun quicksort (sequence &key (start 0) (end (length sequence)) (predicate #'<))
+  "Sort a sequence in-place using quicksort."
+  (when (> (- end start) 1)
+    (let ((pivot-pos (partition sequence start end predicate)))
+      (quicksort sequence :start start :end pivot-pos :predicate predicate)
+      (quicksort sequence :start (1+ pivot-pos) :end end :predicate predicate)))
+  sequence)
+
+;; Helper function for in-place quicksort
+(defun partition (sequence start end predicate)
+  (let ((pivot (elt sequence start))
+        (i (1+ start)))
+    (loop for j from (1+ start) below end
+          when (funcall predicate (elt sequence j) pivot)
+          do (progn
+               (rotatef (elt sequence i) (elt sequence j))
+               (incf i)))
+    (rotatef (elt sequence start) (elt sequence (1- i)))
+    (1- i)))
+
+;; Example usage
+(defun run-examples ()
+  (let ((list1 '(3 1 4 1 5 9 2 6 5 3 5))
+        (list2 '(3 1 4 1 5 9 2 6 5 3 5))
+        (vector1 #(3 1 4 1 5 9 2 6 5 3 5)))
+    (format t "Original list: ~a~%" list1)
+    (format t "Functional quicksort: ~a~%" (quicksort-functional list1))
+    (format t "Original list unchanged: ~a~%" list1)
+    (format t "Destructive quicksort (list): ~a~%" (quicksort list2))
+    (format t "Destructive quicksort (vector): ~a~%" (quicksort vector1))))
+;; Quicksort:1 ends here
+#+END_SRC
+

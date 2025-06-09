@@ -1,10 +1,10 @@
-;; FizzBuzz
+;; fizzbuzz
 
 
-;; [[file:../../SETUP.org::*FizzBuzz][FizzBuzz:1]]
+;; [[file:../../showcase-common-lisp.org::*fizzbuzz][fizzbuzz:1]]
 (defpackage :cl-fizzbuzz
   (:use :cl)
-  (:export :fizzbuzz))
+  (:export :fizzbuzz :fizzbuzz-list :run-examples))
 
 (in-package :cl-fizzbuzz)
 
@@ -32,4 +32,4 @@
   (format t "FizzBuzz (1-20):~%")
   (fizzbuzz 20)
   (format t "~%FizzBuzz as list (1-20): ~a~%" (fizzbuzz-list 20)))
-;; FizzBuzz:1 ends here
+;; fizzbuzz:1 ends here

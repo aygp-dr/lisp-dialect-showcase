@@ -1,0 +1,126 @@
+#+TITLE: Lisp Dialect Showcase
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: April 14, 2025
+#+OPTIONS: toc:3 num:t ^:nil
+
+* Lisp Dialect Showcase
+
+A comparative showcase of different Lisp dialects implementing common programming problems.
+
+* Overview
+
+This repository demonstrates the similarities and differences between various Lisp dialects by implementing the same set of algorithms in each. It serves as both a learning resource and a reference for programmers interested in the Lisp family of languages.
+
+* Included Dialects
+
+- [[./src/common-lisp/][Common Lisp (SBCL)]] - A standardized, multi-paradigm Lisp dialect
+- [[./src/clojure/][Clojure]] - A modern Lisp for the JVM
+- [[./src/scheme/][Scheme]] - A minimalist Lisp dialect
+- [[./src/emacs-lisp/][Emacs Lisp]] - The extension language for the Emacs editor
+- [[./src/racket/][Racket]] - A Scheme-based language focused on language-oriented programming
+- [[./src/hy/][Hy]] - A Lisp dialect embedded in Python
+- [[./src/fennel/][Fennel]] - A Lisp that compiles to Lua
+- [[./src/janet/][Janet]] - A functional and imperative programming language
+
+* Example Problems
+
+Each dialect implements the following problems:
+
+1. [[./src/common-lisp/fibonacci.lisp][Fibonacci sequence]]
+2. [[./src/common-lisp/factorial.lisp][Factorial calculation]]
+3. [[./src/common-lisp/primes.lisp][Prime number generation]]
+4. [[./src/common-lisp/fizzbuzz.lisp][FizzBuzz]]
+5. [[./src/common-lisp/quicksort.lisp][Quicksort implementation]]
+
+* Installation
+
+This repository includes a Makefile and scripts for installing all the necessary Lisp dialects.
+
+#+BEGIN_SRC shell
+# For FreeBSD systems
+make install
+
+# For other systems
+sh scripts/deps-simple.sh
+#+END_SRC
+
+* Makefile Targets
+
+- ~install~ - Install all Lisp dialects (FreeBSD)
+- ~tangle~ - Extract code blocks from all .org files
+- ~detangle~ - Update .org files from source files
+- ~clean~ - Remove tangled files and build artifacts
+- ~run~ - Run all examples
+- ~lint-scripts~ - Run shellcheck on all shell scripts
+- ~help~ - Show this help message
+
+* Running Examples
+
+After installation, you can run all examples with:
+
+#+BEGIN_SRC shell
+make run
+#+END_SRC
+
+Or run examples for a specific dialect:
+
+#+BEGIN_SRC shell
+sh scripts/run-common-lisp.sh
+sh scripts/run-clojure.sh
+sh scripts/run-scheme.sh
+sh scripts/run-emacs-lisp.sh
+sh scripts/run-racket.sh
+sh scripts/run-hy.sh
+sh scripts/run-fennel.sh
+sh scripts/run-janet.sh
+#+END_SRC
+
+* Benchmarks
+
+You can compare the performance of different dialects:
+
+#+BEGIN_SRC shell
+sh scripts/benchmark.sh
+#+END_SRC
+
+This will benchmark Fibonacci implementations across all dialects.
+
+* Structure
+
+- ~src/~ - Source code organized by dialect
+  - [[./src/common-lisp/][common-lisp/]] - Common Lisp implementations
+  - [[./src/clojure/][clojure/]] - Clojure implementations
+  - [[./src/scheme/][scheme/]] - Scheme implementations
+  - [[./src/emacs-lisp/][emacs-lisp/]] - Emacs Lisp implementations
+  - [[./src/racket/][racket/]] - Racket implementations
+  - [[./src/hy/][hy/]] - Hy implementations
+  - [[./src/fennel/][fennel/]] - Fennel implementations
+  - [[./src/janet/][janet/]] - Janet implementations
+- ~scripts/~ - Helper scripts for running examples and benchmarks
+- ~showcase-*.org~ - Org-mode files containing source code with literate programming for each dialect
+- ~docs/~ - Additional documentation and diagrams
+
+* Org-mode Integration
+
+The ~showcase-*.org~ files contain the source code in a literate programming format for each dialect. You can:
+
+1. Modify code in the showcase org files and run ~make tangle~ to extract it to source files
+2. Modify code in source files and run ~make detangle~ to update the showcase org files
+
+This workflow is ideal for Emacs users familiar with org-mode.
+
+* Tested Environments
+
+** Operating System
+- FreeBSD 14.2-RELEASE
+
+** Language Versions
+- Common Lisp: SBCL 2.5.2
+- Clojure: 1.12.0.1488
+- Fennel: 1.5.3 on PUC Lua 5.4
+- Scheme: Guile 3.0.10
+- Janet: 1.37.1-meson
+
+* License
+
+MIT

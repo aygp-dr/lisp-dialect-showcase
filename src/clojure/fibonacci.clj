@@ -1,3 +1,7 @@
+;; fibonacci
+
+
+;; [[file:../../showcase-clojure.org::*fibonacci][fibonacci:1]]
 (ns clojure.fibonacci
   (:gen-class))
 
@@ -33,3 +37,4 @@
 
 (defn -main []
   (run-examples))
+;; fibonacci:1 ends here

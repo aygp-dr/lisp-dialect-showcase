@@ -1,0 +1,213 @@
+#+TITLE: clojure Examples
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: 2025-06-09
+#+PROPERTY: header-args :padline yes :comments both
+#+OPTIONS: toc:3 num:t
+
+* clojure Examples
+
+** factorial
+
+#+BEGIN_SRC clojure :tangle src/clojure/factorial.clj :mkdirp yes
+(ns clojure.factorial
+  (:gen-class))
+
+;; Recursive implementation
+(defn factorial-recursive [n]
+  (if (<= n 1)
+    1
+    (* n (factorial-recursive (dec n)))))
+
+;; Tail-recursive implementation
+(defn factorial-tail
+  ([n] (factorial-tail n 1))
+  ([n acc]
+   (if (<= n 1)
+     acc
+     (recur (dec n) (* acc n)))))
+
+;; Using reduce
+(defn factorial-reduce [n]
+  (reduce * (range 1 (inc n))))
+
+;; Example usage
+(defn run-examples []
+  (println "Factorial of 5 (recursive):" (factorial-recursive 5))
+  (println "Factorial of 5 (tail):" (factorial-tail 5))
+  (println "Factorial of 5 (reduce):" (factorial-reduce 5)))
+
+(defn -main []
+  (run-examples))
+#+END_SRC
+
+** fibonacci
+
+#+BEGIN_SRC clojure :tangle src/clojure/fibonacci.clj :mkdirp yes
+(ns clojure.fibonacci
+  (:gen-class))
+
+;; Recursive implementation
+(defn fib-recursive [n]
+  (cond 
+    (= n 0) 0
+    (= n 1) 1
+    :else (+ (fib-recursive (- n 1))
+             (fib-recursive (- n 2)))))
+
+;; Lazy sequence implementation
+(def fibs
+  (lazy-cat [0 1] (map + fibs (rest fibs))))
+
+(defn fib-lazy [n]
+  (nth fibs n))
+
+;; Tail-recursive implementation
+(defn fib-tail
+  ([n] (fib-tail n 0 1))
+  ([n a b]
+   (if (zero? n)
+     a
+     (recur (dec n) b (+ a b)))))
+
+;; Example usage
+(defn run-examples []
+  (println "Fibonacci of 10 (recursive):" (fib-recursive 10))
+  (println "Fibonacci of 10 (lazy):" (fib-lazy 10))
+  (println "Fibonacci of 10 (tail):" (fib-tail 10))
+  (println "First 10 Fibonacci numbers:" (take 10 fibs)))
+
+(defn -main []
+  (run-examples))
+#+END_SRC
+
+** fizzbuzz
+
+#+BEGIN_SRC clojure :tangle src/clojure/fizzbuzz.clj :mkdirp yes
+(ns clojure.fizzbuzz
+  (:gen-class))
+
+;; FizzBuzz using cond
+(defn fizzbuzz-cond [n]
+  (map (fn [i]
+         (cond
+           (zero? (mod i 15)) "FizzBuzz"
+           (zero? (mod i 3)) "Fizz"
+           (zero? (mod i 5)) "Buzz"
+           :else i))
+       (range 1 (inc n))))
+
+;; FizzBuzz using pattern matching
+(defn fizzbuzz-match [n]
+  (for [i (range 1 (inc n))]
+    (condp #(zero? (mod %2 %1)) i
+      15 "FizzBuzz"
+      3 "Fizz"
+      5 "Buzz"
+      i)))
+
+;; FizzBuzz using case with remainder vector
+(defn fizzbuzz-case [n]
+  (for [i (range 1 (inc n))
+        :let [div3 (zero? (mod i 3))
+              div5 (zero? (mod i 5))]]
+    (case [div3 div5]
+      [true true] "FizzBuzz"
+      [true false] "Fizz"
+      [false true] "Buzz"
+      i)))
+
+;; Example usage
+(defn run-examples []
+  (println "FizzBuzz (1-20) using cond:")
+  (doseq [item (fizzbuzz-cond 20)]
+    (println item))
+  (println "\nFizzBuzz (1-20) using pattern matching:")
+  (println (fizzbuzz-match 20)))
+
+(defn -main []
+  (run-examples))
+#+END_SRC
+
+** primes
+
+#+BEGIN_SRC clojure :tangle src/clojure/primes.clj :mkdirp yes
+(ns clojure.primes
+  (:gen-class))
+
+;; Check if a number is prime
+(defn prime? [n]
+  (cond
+    (<= n 1) false
+    (= n 2) true
+    (even? n) false
+    :else (not-any? #(zero? (mod n %))
+                    (range 3 (inc (Math/sqrt n)) 2))))
+
+;; Sieve of Eratosthenes
+(defn sieve-of-eratosthenes [n]
+  (let [n (int n)]
+    (if (<= n 1)
+      []
+      (let [sqrt-n (int (Math/sqrt n))
+            sieve (boolean-array (inc n) true)]
+        (aset sieve 0 false)
+        (aset sieve 1 false)
+        (doseq [i (range 2 (inc sqrt-n))]
+          (when (aget sieve i)
+            (doseq [j (range (* i i) (inc n) i)]
+              (aset sieve j false))))
+        (filter #(aget sieve %) (range 2 (inc n)))))))
+
+;; Generate primes up to n
+(defn primes-up-to [n]
+  (filter prime? (range 2 (inc n))))
+
+;; Example usage
+(defn run-examples []
+  (println "Primes up to 20:" (primes-up-to 20))
+  (println "Primes up to 20 (sieve):" (sieve-of-eratosthenes 20))
+  (println "Is 17 prime?" (prime? 17))
+  (println "Is 15 prime?" (prime? 15)))
+
+(defn -main []
+  (run-examples))
+#+END_SRC
+
+** quicksort
+
+#+BEGIN_SRC clojure :tangle src/clojure/quicksort.clj :mkdirp yes
+(ns clojure.quicksort
+  (:gen-class))
+
+;; Functional implementation of quicksort
+(defn quicksort [coll]
+  (if (empty? coll)
+    []
+    (let [pivot (first coll)
+          rest-coll (rest coll)]
+      (concat (quicksort (filter #(< % pivot) rest-coll))
+              [pivot]
+              (quicksort (filter #(>= % pivot) rest-coll))))))
+
+;; Using partition
+(defn quicksort-partition [coll]
+  (if (or (empty? coll) (= 1 (count coll)))
+    coll
+    (let [pivot (first coll)
+          parts (group-by #(compare % pivot) (rest coll))]
+      (concat (quicksort-partition (get parts -1 []))
+              [pivot]
+              (quicksort-partition (get parts 1 []))
+              (quicksort-partition (get parts 0 []))))))
+
+;; Example usage
+(defn run-examples []
+  (let [numbers [3 1 4 1 5 9 2 6 5 3 5]]
+    (println "Original collection:" numbers)
+    (println "Quicksort:" (quicksort numbers))
+    (println "Quicksort with partition:" (quicksort-partition numbers))))
+
+(defn -main []
+  (run-examples))
+#+END_SRC
+

@@ -1,3 +1,7 @@
+;; fizzbuzz
+
+
+;; [[file:../../showcase-emacs-lisp.org::*fizzbuzz][fizzbuzz:1]]
 ;;; fizzbuzz.el --- FizzBuzz implementation in Emacs Lisp
 
 ;;; Commentary:
@@ -41,3 +45,4 @@
 
 (provide 'fizzbuzz)
 ;;; fizzbuzz.el ends here
+;; fizzbuzz:1 ends here

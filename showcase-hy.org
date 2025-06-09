@@ -1,0 +1,212 @@
+#+TITLE: hy Examples
+#+AUTHOR: Aidan Pace <apace@defrecord.com>
+#+DATE: 2025-06-09
+#+PROPERTY: header-args :padline yes :comments both
+#+OPTIONS: toc:3 num:t
+
+* hy Examples
+
+** factorial
+
+#+BEGIN_SRC hy :tangle src/hy/factorial.hy :mkdirp yes
+#!/usr/bin/env hy
+
+;; Recursive implementation
+(defn factorial-recursive [n]
+  (if (<= n 1)
+      1
+      (* n (factorial-recursive (- n 1)))))
+
+;; Tail-recursive implementation
+(defn factorial-tail [n &optional [acc 1]]
+  (if (<= n 1)
+      acc
+      (factorial-tail (- n 1) (* n acc))))
+
+;; Using Python's functionality
+(import math)
+
+(defn factorial-math [n]
+  (math.factorial n))
+
+;; Example usage
+(defn run-examples []
+  (print f"Factorial of 5 (recursive): {(factorial-recursive 5)}")
+  (print f"Factorial of 5 (tail-recursive): {(factorial-tail 5)}")
+  (print f"Factorial of 5 (math): {(factorial-math 5)}")
+  )
+
+(when (= __name__ "__main__")
+  (run-examples))
+#+END_SRC
+
+** fibonacci
+
+#+BEGIN_SRC hy :tangle src/hy/fibonacci.hy :mkdirp yes
+#!/usr/bin/env hy
+
+;; Recursive implementation
+(defn fib-recursive [n]
+  (cond [(= n 0) 0]
+        [(= n 1) 1]
+        [True (+ (fib-recursive (- n 1))
+                 (fib-recursive (- n 2)))]))
+
+;; Using Python's functionality
+(import functools)
+
+(defn fib-memo [n]
+  (with-decorator (functools.lru_cache)
+    (defn fib [n]
+      (if (< n 2)
+          n
+          (+ (fib (- n 1))
+             (fib (- n 2))))))
+  (fib n))
+
+;; Generator-based implementation
+(defn fib-seq [n]
+  (setv a 0)
+  (setv b 1)
+  (for [_ (range n)]
+    (yield a)
+    (setv [a b] [(, b (+ a b))]))
+  (yield a))
+
+(defn fib-gen [n]
+  (list (take (+ n 1) (fib-seq 1000)))[-1])
+
+;; Example usage
+(defn run-examples []
+  (print f"Fibonacci of 10 (recursive): {(fib-recursive 10)}")
+  (print f"Fibonacci of 10 (memoized): {(fib-memo 10)}")
+  (print f"Fibonacci of 10 (generator): {(fib-gen 10)}")
+  (print f"First 10 Fibonacci numbers: {(list (take 10 (fib-seq 20)))}")
+  )
+
+(when (= __name__ "__main__")
+  (run-examples))
+#+END_SRC
+
+** fizzbuzz
+
+#+BEGIN_SRC hy :tangle src/hy/fizzbuzz.hy :mkdirp yes
+#!/usr/bin/env hy
+
+;; FizzBuzz implementation
+(defn fizzbuzz [n]
+  (for [i (range 1 (+ n 1))]
+    (print (cond [(= (% i 15) 0) "FizzBuzz"]
+                 [(= (% i 3) 0) "Fizz"]
+                 [(= (% i 5) 0) "Buzz"]
+                 [True i]))))
+
+;; FizzBuzz returning a list
+(defn fizzbuzz-list [n]
+  (lfor i (range 1 (+ n 1))
+        (cond [(= (% i 15) 0) "FizzBuzz"]
+              [(= (% i 3) 0) "Fizz"]
+              [(= (% i 5) 0) "Buzz"]
+              [True i])))
+
+;; Using Python list comprehension style
+(defn fizzbuzz-comp [n]
+  (lfor i (range 1 (+ n 1))
+        (if (= (% i 15) 0) "FizzBuzz"
+            (if (= (% i 3) 0) "Fizz"
+                (if (= (% i 5) 0) "Buzz" i)))))
+
+;; Example usage
+(defn run-examples []
+  (print "FizzBuzz (1-20):")
+  (fizzbuzz 20)
+  (print "\nFizzBuzz as list (1-20):")
+  (print (fizzbuzz-list 20))
+  )
+
+(when (= __name__ "__main__")
+  (run-examples))
+#+END_SRC
+
+** primes
+
+#+BEGIN_SRC hy :tangle src/hy/primes.hy :mkdirp yes
+#!/usr/bin/env hy
+
+;; Check if a number is prime
+(defn prime? [n]
+  (when (> n 1)
+    (setv limit (int (math.sqrt n)))
+    (for [i (range 2 (+ limit 1))]
+      (when (= (% n i) 0)
+        (return False)))
+    True))
+
+;; Generate primes up to n
+(defn primes-up-to [n]
+  (lfor i (range 2 (+ n 1)) :if (prime? i) i))
+
+;; Sieve of Eratosthenes
+(defn sieve-of-eratosthenes [n]
+  (setv sieve (* [True] (+ n 1)))
+  (assoc sieve 0 False)
+  (assoc sieve 1 False)
+  
+  (for [i (range 2 (+ (int (math.sqrt n)) 1))]
+    (when (get sieve i)
+      (for [j (range (* i i) (+ n 1) i)]
+        (assoc sieve j False))))
+  
+  (lfor i (range 2 (+ n 1)) :if (get sieve i) i))
+
+;; Example usage
+(import math)
+
+(defn run-examples []
+  (print f"Primes up to 20: {(primes-up-to 20)}")
+  (print f"Primes up to 20 (sieve): {(sieve-of-eratosthenes 20)}")
+  (print f"Is 17 prime? {(prime? 17)}")
+  (print f"Is 15 prime? {(prime? 15)}")
+  )
+
+(when (= __name__ "__main__")
+  (run-examples))
+#+END_SRC
+
+** quicksort
+
+#+BEGIN_SRC hy :tangle src/hy/quicksort.hy :mkdirp yes
+#!/usr/bin/env hy
+
+;; Quicksort implementation
+(defn quicksort [lst]
+  (if (or (not lst) (= (len lst) 1))
+      lst
+      (let [pivot (first lst)
+            rest (list (rest lst))]
+        (+ (quicksort (lfor x rest :if (< x pivot) x))
+           [pivot]
+           (quicksort (lfor x rest :if (>= x pivot) x))))))
+
+;; Quicksort using filter
+(defn quicksort-filter [lst]
+  (if (or (not lst) (= (len lst) 1))
+      lst
+      (let [pivot (first lst)
+            rest (list (rest lst))]
+        (+ (quicksort-filter (list (filter (fn [x] (< x pivot)) rest)))
+           [pivot]
+           (quicksort-filter (list (filter (fn [x] (>= x pivot)) rest)))))))
+
+;; Example usage
+(defn run-examples []
+  (setv numbers [3 1 4 1 5 9 2 6 5 3 5])
+  (print f"Original list: {numbers}")
+  (print f"Sorted list: {(quicksort numbers)}")
+  (print f"Sorted with filter: {(quicksort-filter numbers)}")
+  )
+
+(when (= __name__ "__main__")
+  (run-examples))
+#+END_SRC
+

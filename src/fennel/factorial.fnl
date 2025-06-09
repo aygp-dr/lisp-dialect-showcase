@@ -1,3 +1,7 @@
+lisp factorial
+
+
+lisp [[file:../../showcase-fennel.org::*factorial][factorial:1]]
 ;; Recursive implementation
 (fn factorial-recursive [n]
   (if (<= n 1)
@@ -25,3 +29,4 @@
   (print (.. "Factorial of 5 (iterative): " (factorial-iterative 5))))
 
 (run-examples)
+lisp factorial:1 ends here

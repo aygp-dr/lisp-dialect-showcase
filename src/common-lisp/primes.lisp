@@ -1,10 +1,10 @@
-;; Prime Number Generator
+;; primes
 
 
-;; [[file:../../SETUP.org::*Prime Number Generator][Prime Number Generator:1]]
+;; [[file:../../showcase-common-lisp.org::*primes][primes:1]]
 (defpackage :cl-primes
   (:use :cl)
-  (:export :primep :sieve-of-eratosthenes :primes-up-to))
+  (:export :primep :sieve-of-eratosthenes :primes-up-to :run-examples))
 
 (in-package :cl-primes)
 
@@ -42,4 +42,4 @@
   (format t "Primes up to 20 (sieve): ~a~%" (sieve-of-eratosthenes 20))
   (format t "Is 17 prime? ~a~%" (primep 17))
   (format t "Is 15 prime? ~a~%" (primep 15)))
-;; Prime Number Generator:1 ends here
+;; primes:1 ends here
