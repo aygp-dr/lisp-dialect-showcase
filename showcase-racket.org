@@ -2,13 +2,18 @@
 #+AUTHOR: Aidan Pace <apace@defrecord.com>
 #+DATE: 2025-06-09
 #+PROPERTY: header-args :padline yes :comments both
+#+PROPERTY: header-args:scheme :comments ;; :tangle-mode (identity #o644)
+
+# Local Variables:
+# geiser-scheme-implementation: racket
+# End:
 #+OPTIONS: toc:3 num:t
 
 * racket Examples
 
 ** factorial
 
-#+BEGIN_SRC racket :tangle src/racket/factorial.rkt :mkdirp yes
+#+BEGIN_SRC scheme :tangle src/racket/factorial.rkt :mkdirp yes
 #lang racket
 
 ;; Recursive implementation
@@ -41,7 +46,7 @@
 
 ** fibonacci
 
-#+BEGIN_SRC racket :tangle src/racket/fibonacci.rkt :mkdirp yes
+#+BEGIN_SRC scheme :tangle src/racket/fibonacci.rkt :mkdirp yes
 #lang racket
 
 ;; Recursive implementation
@@ -85,7 +90,7 @@
 
 ** fizzbuzz
 
-#+BEGIN_SRC racket :tangle src/racket/fizzbuzz.rkt :mkdirp yes
+#+BEGIN_SRC scheme :tangle src/racket/fizzbuzz.rkt :mkdirp yes
 #lang racket
 
 ;; FizzBuzz using cond
@@ -129,7 +134,7 @@
 
 ** primes
 
-#+BEGIN_SRC racket :tangle src/racket/primes.rkt :mkdirp yes
+#+BEGIN_SRC scheme :tangle src/racket/primes.rkt :mkdirp yes
 #lang racket
 
 ;; Check if a number is prime
@@ -174,7 +179,7 @@
 
 ** quicksort
 
-#+BEGIN_SRC racket :tangle src/racket/quicksort.rkt :mkdirp yes
+#+BEGIN_SRC scheme :tangle src/racket/quicksort.rkt :mkdirp yes
 #lang racket
 
 ;; Quicksort implementation using filter
