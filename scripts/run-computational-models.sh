@@ -5,7 +5,7 @@ SCRIPT_DIR=$(dirname "$0")
 ROOT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 
 echo "Running Computational Models Framework..."
-echo "=======================================\n"
+printf "=======================================\\n"
 
 # Check if guile is installed
 if ! command -v guile >/dev/null 2>&1; then
@@ -23,4 +23,4 @@ guile -L "$ROOT_DIR/src/scheme" \
   -l "$ROOT_DIR/src/scheme/computational-models-guide.scm" \
   -c "(run-computational-models-demo)"
 
-echo "\nComputational models demonstration complete."
+printf "\\nComputational models demonstration complete.\\n"

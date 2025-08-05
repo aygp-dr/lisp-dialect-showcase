@@ -153,17 +153,17 @@ pkg install -y lang/janet || {
     }
 
     # Create symlinks
-    JANET_LIB=$(ls /usr/local/lib/libjanet.so.* 2>/dev/null | head -1)
+    JANET_LIB=$(find /usr/local/lib -name "libjanet.so.*" -type f 2>/dev/null | head -1)
     if [ -n "$JANET_LIB" ]; then
-        JANET_VERSION=$(basename $JANET_LIB | sed 's/libjanet.so.//')
-        ln -sf $JANET_LIB /usr/local/lib/libjanet.so
+        JANET_VERSION=$(basename "$JANET_LIB" | sed 's/libjanet.so.//')
+        ln -sf "$JANET_LIB" /usr/local/lib/libjanet.so
         mkdir -p /usr/local/include/janet
         
         # Find the correct header file
-        JANET_HEADER=$(ls /usr/local/include/janet/janet_*.h 2>/dev/null | head -1)
+        JANET_HEADER=$(find /usr/local/include/janet -name "janet_*.h" -type f 2>/dev/null | head -1)
         if [ -n "$JANET_HEADER" ]; then
-            ln -sf $JANET_HEADER /usr/local/include/janet.h
-            ln -sf $(basename $JANET_HEADER) /usr/local/include/janet/janet.h
+            ln -sf "$JANET_HEADER" /usr/local/include/janet.h
+            ln -sf "$(basename "$JANET_HEADER")" /usr/local/include/janet/janet.h
             echo "Janet symlinks created successfully for version $JANET_VERSION."
         fi
     fi
