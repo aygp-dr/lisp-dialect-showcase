@@ -1,0 +1,31 @@
+Implementation notes:
+
+Thought process:
+- Systematic analysis revealed multiple critical issues preventing example execution
+- Prioritized fixing blocking syntax errors first, then compatibility issues
+- Focused on making code work with standard installations without requiring additional packages
+
+Debugging/Issues encountered:
+- Clojure: Malformed namespace declarations with embedded prn/binding statements
+- Clojure: Run script wasn't calling -main functions, needed explicit invocation
+- Common Lisp: Missing exports prevented SBCL from finding run-examples functions
+- Emacs Lisp: CL-style optional parameters not supported, needed manual default handling
+- Emacs Lisp: isqrt function not available in older versions, implemented int-sqrt
+- Emacs Lisp: cl-lib functions caused dependency issues, replaced with built-ins
+- Racket: racket/memoize module not available, implemented manual memoization
+
+Cleanup performed:
+- Standardized function export patterns across Common Lisp packages
+- Replaced external dependencies with built-in alternatives where possible
+- Ensured cross-platform compatibility for all dialect implementations
+- Verified all examples run successfully after fixes
+
+Technical decisions:
+- Chose manual implementations over external dependencies for better portability
+- Used global hash tables for Emacs Lisp memoization to avoid closure complexity
+- Kept original algorithm logic intact while fixing syntax/compatibility issues
+
+Future improvements:
+- Consider adding automated testing to catch regressions
+- Explore more sophisticated memoization patterns for educational value
+- Add error handling and input validation to examples
