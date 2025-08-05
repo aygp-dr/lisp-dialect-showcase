@@ -2,7 +2,7 @@
 
 
 ;; [[file:../../showcase-clojure.org::*fibonacci][fibonacci:1]]
-(prn (binding [*out* (java.io.StringWriter.)](ns clojure.fibonacci
+(ns clojure.fibonacci
   (:gen-class))
 
 
@@ -36,5 +36,5 @@
   (println "First 10 Fibonacci numbers:" (take 10 fibs)))
 
 (defn -main []
-  (run-examples))))
+  (run-examples))
 ;; fibonacci:1 ends here

@@ -4,7 +4,7 @@
 ;; [[file:../../showcase-common-lisp.org::*factorial][factorial:1]]
 (defpackage :cl-factorial
   (:use :cl)
-  (:export :factorial-recursive :factorial-iterative :factorial-tail))
+  (:export :factorial-recursive :factorial-iterative :factorial-tail :run-examples))
 
 (in-package :cl-factorial)
 

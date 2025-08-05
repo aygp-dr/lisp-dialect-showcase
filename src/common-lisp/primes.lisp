@@ -4,7 +4,7 @@
 ;; [[file:../../showcase-common-lisp.org::*primes][primes:1]]
 (defpackage :cl-primes
   (:use :cl)
-  (:export :primep :sieve-of-eratosthenes :primes-up-to))
+  (:export :primep :sieve-of-eratosthenes :primes-up-to :run-examples))
 
 (in-package :cl-primes)
 

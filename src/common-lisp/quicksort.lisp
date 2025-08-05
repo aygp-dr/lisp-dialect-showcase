@@ -8,7 +8,7 @@
 ;; [[file:../../SETUP.org::*Quicksort][Quicksort:1]]
 (defpackage :cl-quicksort
   (:use :cl)
-  (:export :quicksort :quicksort-functional))
+  (:export :quicksort :quicksort-functional :partition :run-examples))
 
 (in-package :cl-quicksort)
 

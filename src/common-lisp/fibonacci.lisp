@@ -4,7 +4,7 @@
 ;; [[file:../../showcase-common-lisp.org::*fibonacci][fibonacci:1]]
 (defpackage :cl-fibonacci
   (:use :cl)
-  (:export :fib-recursive :fib-iterative :fib-memo))
+  (:export :fib-recursive :fib-iterative :fib-memo :run-examples))
 
 (in-package :cl-fibonacci)
 

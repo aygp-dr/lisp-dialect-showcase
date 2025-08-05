@@ -2,7 +2,7 @@
 
 
 ;; [[file:../../showcase-clojure.org::*primes][primes:1]]
-(prn (binding [*out* (java.io.StringWriter.)](ns clojure.primes
+(ns clojure.primes
   (:gen-class))
 
 
@@ -41,5 +41,5 @@
   (println "Is 15 prime?" (prime? 15)))
 
 (defn -main []
-  (run-examples))))
+  (run-examples))
 ;; primes:1 ends here

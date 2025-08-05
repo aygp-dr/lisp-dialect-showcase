@@ -2,7 +2,7 @@
 
 
 ;; [[file:../../showcase-clojure.org::*quicksort][quicksort:1]]
-(prn (binding [*out* (java.io.StringWriter.)](ns clojure.quicksort
+(ns clojure.quicksort
   (:gen-class))
 
 
@@ -34,5 +34,5 @@
     (println "Quicksort with partition:" (quicksort-partition numbers))))
 
 (defn -main []
-  (run-examples))))
+  (run-examples))
 ;; quicksort:1 ends here

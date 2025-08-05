@@ -5,6 +5,15 @@
 
 ;;; Code:
 
+;; Helper function to filter list
+(defun filter-list (predicate list)
+  "Return a new list containing elements of LIST that satisfy PREDICATE."
+  (let ((result nil))
+    (dolist (item list)
+      (when (funcall predicate item)
+        (push item result)))
+    (nreverse result)))
+
 ;; Quicksort implementation for lists
 (defun quicksort-list (list)
   "Sort LIST using quicksort algorithm."
@@ -12,8 +21,8 @@
       list
     (let* ((pivot (car list))
            (rest (cdr list))
-           (lesser (cl-remove-if-not (lambda (x) (< x pivot)) rest))
-           (greater (cl-remove-if-not (lambda (x) (>= x pivot)) rest)))
+           (lesser (filter-list (lambda (x) (< x pivot)) rest))
+           (greater (filter-list (lambda (x) (>= x pivot)) rest)))
       (append (quicksort-list lesser)
               (list pivot)
               (quicksort-list greater)))))
@@ -34,12 +43,17 @@
   "Partition vector VEC from START to END and return pivot position."
   (let* ((pivot (aref vec start))
          (i (1+ start)))
-    (cl-loop for j from (1+ start) below end
-             when (< (aref vec j) pivot)
-             do (progn
-                  (cl-rotatef (aref vec i) (aref vec j))
-                  (setq i (1+ i))))
-    (cl-rotatef (aref vec start) (aref vec (1- i)))
+    (let ((j (1+ start)))
+      (while (< j end)
+        (when (< (aref vec j) pivot)
+          (let ((temp (aref vec i)))
+            (aset vec i (aref vec j))
+            (aset vec j temp))
+          (setq i (1+ i)))
+        (setq j (1+ j))))
+    (let ((temp (aref vec start)))
+      (aset vec start (aref vec (1- i)))
+      (aset vec (1- i) temp))
     (1- i)))
 
 ;; Example usage

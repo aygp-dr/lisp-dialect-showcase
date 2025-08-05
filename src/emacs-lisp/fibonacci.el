@@ -26,28 +26,27 @@
                  (aref fib-table i)))))
     (aref fib-table n)))
 
-;; Memoization using lexical closure
-(defun fib-memo-func ()
-  "Create a memoized Fibonacci function."
-  (let ((memo (make-hash-table)))
-    (puthash 0 0 memo)
-    (puthash 1 1 memo)
-    (lambda (n)
-      (or (gethash n memo)
-          (puthash n
-                   (+ (funcall this (- n 1))
-                      (funcall this (- n 2)))
-                   memo)))))
+;; Memoization using global hash table
+(defvar fib-memo-table (make-hash-table)
+  "Memoization table for Fibonacci numbers.")
 
-(defvar fib-memo (fib-memo-func)
-  "Memoized Fibonacci function.")
+(puthash 0 0 fib-memo-table)
+(puthash 1 1 fib-memo-table)
+
+(defun fib-memo (n)
+  "Calculate the Nth Fibonacci number using memoization."
+  (or (gethash n fib-memo-table)
+      (puthash n
+               (+ (fib-memo (- n 1))
+                  (fib-memo (- n 2)))
+               fib-memo-table)))
 
 ;; Example usage
 (defun run-fibonacci-examples ()
   "Run examples of various Fibonacci implementations."
   (message "Fibonacci of 10 (recursive): %d" (fib-recursive 10))
   (message "Fibonacci of 10 (dynamic programming): %d" (fib-dp 10))
-  (message "Fibonacci of 10 (memoized): %d" (funcall fib-memo 10)))
+  (message "Fibonacci of 10 (memoized): %d" (fib-memo 10)))
 
 (provide 'fibonacci)
 ;;; fibonacci.el ends here

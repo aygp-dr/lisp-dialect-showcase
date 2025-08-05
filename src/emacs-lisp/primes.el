@@ -5,11 +5,16 @@
 
 ;;; Code:
 
+;; Simple integer square root function
+(defun int-sqrt (n)
+  "Calculate integer square root of N."
+  (floor (sqrt n)))
+
 ;; Check if a number is prime
 (defun primep (n)
   "Check if N is a prime number."
   (when (> n 1)
-    (let ((limit (isqrt n))
+    (let ((limit (int-sqrt n))
           (is-prime t)
           (divisor 2))
       (while (and is-prime (<= divisor limit))
@@ -36,7 +41,7 @@
     (aset sieve 0 nil)
     (aset sieve 1 nil)
     ;; Mark multiples of each prime as non-prime
-    (let ((limit (isqrt n)))
+    (let ((limit (int-sqrt n)))
       (dotimes (i limit)
         (let ((num (+ i 2)))
           (when (aref sieve num)

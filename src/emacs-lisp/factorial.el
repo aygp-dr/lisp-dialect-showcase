@@ -20,8 +20,9 @@
       (setq result (* result (1+ i))))))
 
 ;; Tail-recursive implementation
-(defun factorial-tail (n &optional (acc 1))
+(defun factorial-tail (n &optional acc)
   "Calculate factorial of N using tail recursion with accumulator ACC."
+  (unless acc (setq acc 1))
   (if (<= n 1)
       acc
     (factorial-tail (1- n) (* acc n))))

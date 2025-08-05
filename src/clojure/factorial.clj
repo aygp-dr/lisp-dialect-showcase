@@ -2,7 +2,7 @@
 
 
 ;; [[file:../../showcase-clojure.org::*factorial][factorial:1]]
-(prn (binding [*out* (java.io.StringWriter.)](ns clojure.factorial
+(ns clojure.factorial
   (:gen-class))
 
 
@@ -30,5 +30,5 @@
   (println "Factorial of 5 (reduce):" (factorial-reduce 5)))
 
 (defn -main []
-  (run-examples))))
+  (run-examples))
 ;; factorial:1 ends here

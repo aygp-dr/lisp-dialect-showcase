@@ -2,7 +2,7 @@
 
 
 ;; [[file:../../showcase-clojure.org::*fizzbuzz][fizzbuzz:1]]
-(prn (binding [*out* (java.io.StringWriter.)](ns clojure.fizzbuzz
+(ns clojure.fizzbuzz
   (:gen-class))
 
 
@@ -44,5 +44,5 @@
   (println (fizzbuzz-match 20)))
 
 (defn -main []
-  (run-examples))))
+  (run-examples))
 ;; fizzbuzz:1 ends here

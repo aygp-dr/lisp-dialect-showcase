@@ -4,7 +4,7 @@
 ;; [[file:../../showcase-common-lisp.org::*fizzbuzz][fizzbuzz:1]]
 (defpackage :cl-fizzbuzz
   (:use :cl)
-  (:export :fizzbuzz))
+  (:export :fizzbuzz :fizzbuzz-list :run-examples))
 
 (in-package :cl-fizzbuzz)
 

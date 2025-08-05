@@ -11,16 +11,17 @@
         [else (+ (fib-recursive (- n 1))
                  (fib-recursive (- n 2)))]))
 
-;; Memoization with built-in support
-(require racket/memoize)
+;; Simple manual memoization
+(define memo-table (make-hash))
 
-(define fib-memo
-  (memoize
-   (λ (n)
-     (cond [(= n 0) 0]
-           [(= n 1) 1]
-           [else (+ (fib-memo (- n 1))
-                    (fib-memo (- n 2)))]))))
+(define (fib-memo n)
+  (cond [(hash-has-key? memo-table n) (hash-ref memo-table n)]
+        [(= n 0) (hash-set! memo-table n 0) 0]
+        [(= n 1) (hash-set! memo-table n 1) 1]
+        [else (let ([result (+ (fib-memo (- n 1))
+                              (fib-memo (- n 2)))])
+                (hash-set! memo-table n result)
+                result)]))
 
 ;; Contract-based implementation
 (provide/contract
