@@ -4,6 +4,9 @@
 ;; This file provides a project-specific configuration for working with
 ;; the various Lisp dialects in the showcase. Load this file in Emacs
 ;; to set up all the necessary packages and configurations.
+;;
+;; Enhanced with Geiser, Guile3, Org-mode, TRAMP, and Paredit support
+;; for comprehensive Scheme development.
 
 ;;; Code:
 
@@ -30,6 +33,10 @@
   :config
   (require 'smartparens-config)
   :hook (prog-mode . smartparens-strict-mode))
+
+;; Paredit for enhanced S-expression manipulation
+(use-package paredit
+  :hook ((lisp-mode scheme-mode clojure-mode emacs-lisp-mode) . paredit-mode))
 
 ;; Common configurations for all Lisp dialects
 (use-package lisp-mode
@@ -64,14 +71,25 @@
   (setq cider-repl-history-file "~/.emacs.d/cider-repl-history")
   (add-hook 'cider-repl-mode-hook #'company-mode))
 
-;; Scheme (Geiser)
+;; Scheme (Geiser) - Enhanced for better integration
 (use-package geiser
   :config
-  (setq geiser-active-implementations '(guile chicken racket)))
+  (setq geiser-active-implementations '(guile chicken racket))
+  (setq geiser-default-implementation 'guile)
+  (setq geiser-guile-binary "guile3")
+  (setq geiser-repl-history-filename "~/.emacs.d/geiser-history")
+  (setq geiser-repl-startup-time 10000))
 
-(use-package geiser-guile)
-(use-package geiser-chicken)
-(use-package geiser-racket)
+(use-package geiser-guile
+  :after geiser
+  :config
+  (setq geiser-guile-extra-keywords '("match" "match-lambda" "match-lambda*")))
+
+(use-package geiser-chicken
+  :after geiser)
+
+(use-package geiser-racket
+  :after geiser)
 
 ;; Racket
 (use-package racket-mode
@@ -116,6 +134,13 @@
     (add-to-list 'org-src-lang-modes '("fennel" . fennel))
     (add-to-list 'org-src-lang-modes '("janet" . janet))
     (add-to-list 'org-src-lang-modes '("hy" . hy))))
+
+;; TRAMP for remote file editing
+(use-package tramp
+  :ensure nil  ; Built-in
+  :config
+  (setq tramp-default-method "ssh")
+  (setq tramp-verbose 3))
 
 ;; Project management
 (use-package projectile

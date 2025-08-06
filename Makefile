@@ -1,7 +1,13 @@
 # Makefile for lisp-dialect-showcase
 # Installs and configures all needed Lisp dialects on FreeBSD
 
-.PHONY: all install clean common-lisp clojure scheme emacs-lisp racket hy fennel janet deps run computational-models help tangle detangle lint-scripts
+.PHONY: all install clean common-lisp clojure scheme emacs-lisp racket hy fennel janet deps run computational-models help tangle detangle lint-scripts tmux-start tmux-stop tmux-attach
+
+# Project configuration from environment or defaults
+PROJECT_NAME ?= lisp-dialect-showcase
+PROJECT_ROOT ?= $(shell pwd)
+TMUX_SESSION_NAME ?= $(PROJECT_NAME)
+EMACS_PROJECT_FILE ?= $(PROJECT_ROOT)/$(PROJECT_NAME).el
 
 # Use gmake on FreeBSD systems, define EMACS to point to the installed Emacs binary
 EMACS ?= emacs
@@ -17,6 +23,9 @@ all: help
 help:
 	@echo "Makefile for Lisp Dialect Showcase (FreeBSD compatible)"
 	@echo ""
+	@echo "Project: $(PROJECT_NAME)"
+	@echo "Root: $(PROJECT_ROOT)"
+	@echo ""
 	@echo "Targets:"
 	@echo "  install     - Install all Lisp dialects"
 	@echo "  tangle      - Extract code blocks from all .org files"
@@ -25,6 +34,9 @@ help:
 	@echo "  run         - Run all examples"
 	@echo "  computational-models - Run computational models demonstrations"
 	@echo "  lint-scripts - Run shellcheck on all shell scripts"
+	@echo "  tmux-start  - Start tmux session with project Emacs config"
+	@echo "  tmux-attach - Attach to existing tmux session"
+	@echo "  tmux-stop   - Stop tmux session"
 	@echo "  help        - Show this help message"
 
 # Create directories if they don't exist
@@ -136,3 +148,33 @@ clean:
 lint-scripts:
 	@echo "Linting shell scripts..."
 	@find scripts -name "*.sh" -type f -print0 | xargs -0 shellcheck -e SC2086
+
+# Tmux session management
+tmux-start:
+	@echo "Starting tmux session '$(TMUX_SESSION_NAME)' with project Emacs config..."
+	@if tmux has-session -t "$(TMUX_SESSION_NAME)" 2>/dev/null; then \
+		echo "Session '$(TMUX_SESSION_NAME)' already exists. Use 'make tmux-attach' to connect."; \
+	else \
+		tmux new-session -d -s "$(TMUX_SESSION_NAME)" "emacs -nw -Q -l $(EMACS_PROJECT_FILE)"; \
+		echo "Started tmux session '$(TMUX_SESSION_NAME)'"; \
+		echo "Session TTY: $$(tmux list-panes -t $(TMUX_SESSION_NAME) -F '#{pane_tty}')"; \
+		echo "Use 'make tmux-attach' to connect to the session"; \
+	fi
+
+tmux-attach:
+	@echo "Attaching to tmux session '$(TMUX_SESSION_NAME)'..."
+	@if tmux has-session -t "$(TMUX_SESSION_NAME)" 2>/dev/null; then \
+		tmux attach-session -t "$(TMUX_SESSION_NAME)"; \
+	else \
+		echo "No session named '$(TMUX_SESSION_NAME)' found. Use 'make tmux-start' to create one."; \
+		exit 1; \
+	fi
+
+tmux-stop:
+	@echo "Stopping tmux session '$(TMUX_SESSION_NAME)'..."
+	@if tmux has-session -t "$(TMUX_SESSION_NAME)" 2>/dev/null; then \
+		tmux kill-session -t "$(TMUX_SESSION_NAME)"; \
+		echo "Stopped tmux session '$(TMUX_SESSION_NAME)'"; \
+	else \
+		echo "No session named '$(TMUX_SESSION_NAME)' found."; \
+	fi
