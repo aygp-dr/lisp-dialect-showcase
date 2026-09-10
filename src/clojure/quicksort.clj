@@ -23,8 +23,8 @@
           parts (group-by #(compare % pivot) (rest coll))]
       (concat (quicksort-partition (get parts -1 []))
               [pivot]
-              (quicksort-partition (get parts 1 []))
-              (quicksort-partition (get parts 0 []))))))
+              (quicksort-partition (get parts 0 []))
+              (quicksort-partition (get parts 1 []))))))
 
 
 (defn run-examples []
