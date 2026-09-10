@@ -6,6 +6,8 @@
             [clojure.fibonacci]
             [clojure.fizzbuzz]
             [clojure.primes]
-            [clojure.quicksort]))
+            [clojure.quicksort]
+            ;; the fdefs for the tangled examples (test/, which :dev includes)
+            [showcase.specs]))
 
 (stest/instrument)
