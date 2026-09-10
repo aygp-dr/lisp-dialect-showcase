@@ -5,6 +5,10 @@ on:
     branches: [main, master]
   pull_request:
 
+# least privilege for GITHUB_TOKEN (L7 C1)
+permissions:
+  contents: read
+
 jobs:
   check:
     name: clojure (bb check)
@@ -20,7 +24,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: DeLaGuardo/setup-clojure@13.7.0
+      - uses: DeLaGuardo/setup-clojure@6d46099eae24853c33c0482f2bb54edf4f1a4c74 # 13.7.0
         with:
           cli: latest
           bb: latest
