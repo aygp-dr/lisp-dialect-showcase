@@ -100,6 +100,29 @@ This will benchmark Fibonacci implementations across all dialects.
 - ~showcase-*.org~ - Org-mode files containing source code with literate programming for each dialect
 - ~docs/~ - Additional documentation and diagrams
 
+* Clojure development
+
+The Clojure examples form a Clojure project rooted at the top of the
+repository, following the aygp-dr Clojure standard. =deps.edn= is the
+manifest and =bb.edn= holds the tasks.
+
+| Task                    | What it does                              |
+|-------------------------+-------------------------------------------|
+| =bb test=               | test suite (=clojure -M:test=)            |
+| =bb lint=               | clj-kondo on =src/clojure=, =test=, =dev= |
+| =bb fmt= / =bb fmt:fix= | cljfmt on =test= and =dev=                |
+| =bb check=              | lint + fmt + test (CI runs this)          |
+
+=src/clojure/*.clj= is tangled from =showcase-clojure.org=, so its
+=s/fdef= specs can't sit next to the defns. They live, with the data specs,
+in =test/showcase/specs.clj= (see the
+[[https://clojure.org/guides/spec][clojure.spec guide]]). Keep hand-written
+files out of =src/=, because =make clean= deletes every file there.
+=test/showcase/specs_test.clj= runs =stest/check= on every pure fn, and
+=test/showcase/examples_test.clj= checks the =run-examples= output and that
+the implementations agree. Both run with instrumentation on, and
+=clj -M:dev= instruments at the REPL.
+
 * Org-mode Integration
 
 The ~showcase-*.org~ files contain the source code in a literate programming format for each dialect. You can:
