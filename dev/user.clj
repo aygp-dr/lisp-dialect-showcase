@@ -1,0 +1,13 @@
+(ns user
+  "REPL entry point (clj -M:dev). Loads the project and instruments every
+  s/fdef'd fn so bad calls fail fast with explain-data."
+  (:require [clojure.spec.test.alpha :as stest]
+            [clojure.factorial]
+            [clojure.fibonacci]
+            [clojure.fizzbuzz]
+            [clojure.primes]
+            [clojure.quicksort]
+            ;; the fdefs for the tangled examples (test/, which :dev includes)
+            [showcase.specs]))
+
+(stest/instrument)

@@ -22,6 +22,8 @@ target/
 .nrepl-port
 .cpcache/
 .clj-kondo/.cache/
+.lsp/
+.rebel_readline_history
 
 # Emacs Lisp
 *.elc
